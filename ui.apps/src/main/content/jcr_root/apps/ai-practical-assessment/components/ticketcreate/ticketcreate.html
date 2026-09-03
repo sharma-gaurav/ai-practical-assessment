@@ -1,0 +1,70 @@
+<div class="cmp-ticketcreate" data-cmp-is="ticketcreate">
+  <h1>${properties.formTitle || 'Create Support Ticket'}</h1>
+  <form class="cmp-ticketcreate__form" data-cmp-hook-ticketcreate="form">
+
+    <div class="cmp-ticketcreate__form-group">
+      <label for="title" class="cmp-ticketcreate__label">${properties.titleLabel || 'Title *'}</label>
+      <input type="text"
+             id="title"
+             class="cmp-ticketcreate__input"
+             name="title"
+             placeholder="${properties.titlePlaceholder || 'Brief summary of the issue'}"
+             required
+             maxlength="255"
+             data-cmp-hook-ticketcreate="title">
+      <small class="cmp-ticketcreate__help-text">Max 255 characters</small>
+    </div>
+
+    <div class="cmp-ticketcreate__form-group">
+      <label for="description" class="cmp-ticketcreate__label">${properties.descriptionLabel || 'Description *'}</label>
+      <textarea id="description"
+                class="cmp-ticketcreate__textarea"
+                name="description"
+                placeholder="${properties.descriptionPlaceholder || 'Detailed description of the issue'}"
+                required
+                maxlength="5000"
+                rows="6"
+                data-cmp-hook-ticketcreate="description"></textarea>
+      <small class="cmp-ticketcreate__help-text">Max 5000 characters</small>
+    </div>
+
+    <div class="cmp-ticketcreate__form-group">
+      <label for="priority" class="cmp-ticketcreate__label">${properties.priorityLabel || 'Priority *'}</label>
+      <select id="priority"
+              class="cmp-ticketcreate__select"
+              name="priority"
+              required
+              data-cmp-hook-ticketcreate="priority">
+        <option value="">-- Select Priority --</option>
+        <option value="HIGH">High</option>
+        <option value="MEDIUM">Medium</option>
+        <option value="LOW">Low</option>
+      </select>
+    </div>
+
+    <div class="cmp-ticketcreate__form-group">
+      <label for="assignedto" class="cmp-ticketcreate__label">${properties.assigneeLabel || 'Assign To *'}</label>
+      <select id="assignedto"
+              class="cmp-ticketcreate__select"
+              name="assignedto"
+              required
+              data-cmp-hook-ticketcreate="assignedto">
+        <option value="">-- Select User --</option>
+        <option value="admin">Administrator</option>
+      </select>
+      <small class="cmp-ticketcreate__help-text">Select a user from the system</small>
+    </div>
+
+    <div class="cmp-ticketcreate__form-actions">
+      <button type="submit"
+              class="cmp-ticketcreate__button cmp-ticketcreate__button--primary"
+              data-cmp-hook-ticketcreate="submit">
+        ${properties.submitButtonText || 'Create Ticket'}
+      </button>
+      <a href="/content/ai-practical-assessment/tickets.html"
+         class="cmp-ticketcreate__button cmp-ticketcreate__button--secondary">
+        ${properties.cancelButtonText || 'Cancel'}
+      </a>
+    </div>
+  </form>
+</div>

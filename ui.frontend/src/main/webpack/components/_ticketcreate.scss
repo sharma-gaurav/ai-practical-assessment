@@ -1,0 +1,229 @@
+.cmp-ticketcreate {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  h1 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-size: 1.75rem;
+    color: #202020;
+  }
+}
+
+.cmp-ticketcreate__form {
+  display: flex;
+  flex-direction: column;
+}
+
+.cmp-ticketcreate__form-group {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+
+  &--error {
+    .cmp-ticketcreate__label {
+      color: #d64c4c;
+    }
+
+    input,
+    textarea,
+    select {
+      border-color: #d64c4c;
+      background-color: #fef5f5;
+    }
+  }
+}
+
+.cmp-ticketcreate__label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #202020;
+  font-size: 0.95rem;
+  transition: color 0.15s ease;
+}
+
+.cmp-ticketcreate__input,
+.cmp-ticketcreate__textarea,
+.cmp-ticketcreate__select {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #2020e0;
+    box-shadow: 0 0 0 3px rgba(32, 32, 224, 0.1);
+  }
+
+  &:disabled {
+    background-color: #f0f0f0;
+    color: #999;
+    cursor: not-allowed;
+  }
+}
+
+.cmp-ticketcreate__textarea {
+  resize: vertical;
+  min-height: 120px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.cmp-ticketcreate__help-text {
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.cmp-ticketcreate__error-message {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background-color: #fef5f5;
+  color: #d64c4c;
+  font-size: 0.9rem;
+  border-left: 3px solid #d64c4c;
+  border-radius: 2px;
+}
+
+.cmp-ticketcreate__success-message {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: #f0f8f0;
+  color: #2d8659;
+  border-left: 3px solid #2d8659;
+  border-radius: 2px;
+  font-weight: 500;
+}
+
+.cmp-ticketcreate__form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.cmp-ticketcreate__button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.cmp-ticketcreate__button--primary {
+  background-color: #2020e0;
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background-color: #1515c0;
+  }
+}
+
+.cmp-ticketcreate__button--secondary {
+  background-color: #e0e0e0;
+  color: #202020;
+
+  &:hover:not(:disabled) {
+    background-color: #d0d0d0;
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .cmp-ticketcreate {
+    background-color: #1a1a1a;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+
+    h1 {
+      color: #e0e0e0;
+    }
+  }
+
+  .cmp-ticketcreate__label {
+    color: #e0e0e0;
+  }
+
+  .cmp-ticketcreate__input,
+  .cmp-ticketcreate__textarea,
+  .cmp-ticketcreate__select {
+    background-color: #2a2a2a;
+    color: #e0e0e0;
+    border-color: #444;
+
+    &:focus {
+      border-color: #4040ff;
+      box-shadow: 0 0 0 3px rgba(64, 64, 255, 0.1);
+    }
+
+    &:disabled {
+      background-color: #1a1a1a;
+      color: #666;
+    }
+  }
+
+  .cmp-ticketcreate__help-text {
+    color: #999;
+  }
+
+  .cmp-ticketcreate__error-message {
+    background-color: #3d2020;
+    color: #ff6b6b;
+    border-left-color: #ff6b6b;
+  }
+
+  .cmp-ticketcreate__success-message {
+    background-color: #1a3a1a;
+    color: #6bff6b;
+    border-left-color: #6bff6b;
+  }
+
+  .cmp-ticketcreate__button--secondary {
+    background-color: #333;
+    color: #e0e0e0;
+
+    &:hover:not(:disabled) {
+      background-color: #444;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 600px) {
+  .cmp-ticketcreate {
+    margin: 1rem;
+    padding: 1rem;
+  }
+
+  .cmp-ticketcreate__form-actions {
+    flex-direction: column;
+  }
+
+  .cmp-ticketcreate__button {
+    width: 100%;
+  }
+}

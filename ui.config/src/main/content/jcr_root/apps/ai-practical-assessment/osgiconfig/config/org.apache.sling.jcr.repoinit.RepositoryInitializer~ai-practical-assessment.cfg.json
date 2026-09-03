@@ -1,0 +1,10 @@
+{
+    "scripts": [
+        "create service user ai-practical-assessment-ticketservice with path /home/users/system/ai-practical-assessment",
+        "create path (sling:OrderedFolder) /content/dam/ai-practical-assessment",
+        "create path (nt:unstructured) /content/dam/ai-practical-assessment/jcr:content",
+        "set properties on /content/dam/ai-practical-assessment/jcr:content\n  set cq:conf{String} to /conf/ai-practical-assessment\n  set jcr:title{String} to \"AI Practical Assessment\"\nend",
+        "create path (nt:unstructured) /content/ai-practical-assessment/tickets",
+        "set ACL for ai-practical-assessment-ticketservice\n  allow jcr:read,rep:write on /content/ai-practical-assessment\n  allow jcr:all on /content/ai-practical-assessment/tickets\n  allow jcr:read on /home/users\n  allow jcr:read on /home/groups\nend"
+    ]
+}
