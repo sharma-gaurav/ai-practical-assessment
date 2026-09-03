@@ -119,7 +119,7 @@ public class TicketServiceImpl implements TicketService {
     }
 
     private Map<String, Object> createTicketPage(String ticketId, String title, String description,
-                                                  String priority, String assignedTo) throws PersistenceException, RepositoryException {
+            String priority, String assignedTo) throws PersistenceException, RepositoryException {
         // Use system resource resolver for ticket creation and user details
         return systemResolverService.executeWithSystemResolver(SERVICE_USER, resolver -> {
             // Get current authenticated user
@@ -137,12 +137,18 @@ public class TicketServiceImpl implements TicketService {
             Node ticketNode = ticketsRoot.addNode(ticketId, "cq:Page");
 
             // Create jcr:content node with properties
-            Node contentNode = ticketNode.addNode("jcr:content", "nt:unstructured");
+            Node contentNode = ticketNode.addNode("jcr:content", "cq:PageContent");
 
             // Set properties
             Calendar now = Calendar.getInstance();
 
+            contentNode.setProperty("cq:template",
+                    "/conf/ai-practical-assessment/settings/wcm/templates/ticket-content");
+            contentNode.setProperty("sling:resourceType", "ai-practical-assessment/components/page");
             contentNode.setProperty("jcr:title", title);
+            contentNode.setProperty("jcr:description", description);
+            contentNode.setProperty("cq:lastModified", now);
+            contentNode.setProperty("cq:lastModifiedBy", createdBy);
             contentNode.setProperty("description", description);
             contentNode.setProperty("priority", priority);
             contentNode.setProperty("status", "Open");

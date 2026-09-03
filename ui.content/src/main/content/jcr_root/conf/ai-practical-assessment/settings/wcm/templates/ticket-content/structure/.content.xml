@@ -3,14 +3,26 @@
     jcr:primaryType="cq:Page">
     <jcr:content
         cq:deviceGroups="[mobile/groups/responsive]"
-        cq:template="/conf/ai-practical-assessment/settings/wcm/templates/xf-web-variation"
+        cq:lastModified="{Date}2026-09-03T19:31:42.948+05:30"
+        cq:lastModifiedBy="admin"
+        cq:template="/conf/ai-practical-assessment/settings/wcm/templates/ticket-content"
         jcr:primaryType="cq:PageContent"
-        sling:resourceType="ai-practical-assessment/components/xfpage">
+        sling:resourceType="ai-practical-assessment/components/page">
         <root
             jcr:primaryType="nt:unstructured"
             sling:resourceType="ai-practical-assessment/components/container"
-            editable="{Boolean}true"
-            layout="responsiveGrid"/>
+            layout="responsiveGrid">
+            <experiencefragment-header
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="ai-practical-assessment/components/experiencefragment"
+                fragmentVariationPath="/content/experience-fragments/ai-practical-assessment/us/en/site/header/master"/>
+            <container
+                jcr:lastModified="{Date}2026-09-03T19:31:42.943+05:30"
+                jcr:lastModifiedBy="admin"
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="ai-practical-assessment/components/container"
+                layout="responsiveGrid"/>
+        </root>
         <cq:responsive jcr:primaryType="nt:unstructured">
             <breakpoints jcr:primaryType="nt:unstructured">
                 <phone

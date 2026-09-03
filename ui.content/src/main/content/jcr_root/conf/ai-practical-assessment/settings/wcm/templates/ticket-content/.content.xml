@@ -2,11 +2,10 @@
 <jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0"
     jcr:primaryType="cq:Template">
     <jcr:content
-        cq:lastModified="{Date}2026-09-01T14:36:03.092+05:30"
+        cq:lastModified="{Date}2026-09-03T19:31:37.324+05:30"
         cq:lastModifiedBy="admin"
         cq:templateType="/conf/ai-practical-assessment/settings/wcm/template-types/page"
-        jcr:description="My Site Page Template"
         jcr:primaryType="cq:PageContent"
-        jcr:title="Content Page"
-        status="enabled"/>
+        jcr:title="Ticket Content"
+        status="draft"/>
 </jcr:root>
