@@ -12,7 +12,7 @@ All endpoints return JSON. Timestamps are ISO 8601 format (UTC).
 
 ### 1. List All Tickets (with search and filter)
 
-**Endpoint:** `GET /bin/api/tickets`
+**Endpoint:** `GET /bin/api/tickets/list`
 
 **Query Parameters:**
 - `search` (optional): Keyword to search in title and description
@@ -22,7 +22,7 @@ All endpoints return JSON. Timestamps are ISO 8601 format (UTC).
 
 **Request:**
 ```
-GET /bin/api/tickets?search=payment&status=Open
+GET /bin/api/tickets/list?search=payment&status=Open&page=0&limit=20
 ```
 
 **Response (200 OK):**

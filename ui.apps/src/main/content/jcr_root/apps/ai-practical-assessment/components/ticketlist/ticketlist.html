@@ -1,0 +1,61 @@
+<div class="cmp-ticketlist" data-cmp-is="ticketlist">
+    <div class="cmp-ticketlist__search-filter">
+        <div class="cmp-ticketlist__search-group">
+            <input
+                id="ticketlist-search"
+                type="text"
+                class="cmp-ticketlist__search-input"
+                placeholder="Search by title or description..."
+                data-cmp-hook-ticketlist="search"
+                aria-label="Search tickets by title or description">
+        </div>
+
+        <div class="cmp-ticketlist__filter-group">
+            <select
+                id="ticketlist-filter"
+                class="cmp-ticketlist__filter-select"
+                data-cmp-hook-ticketlist="filter"
+                aria-label="Filter tickets by status">
+                <option value="">All Statuses</option>
+                <option value="Open">Open</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+                <option value="Closed">Closed</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+        </div>
+
+        <button
+            type="button"
+            class="cmp-ticketlist__clear-btn"
+            data-cmp-hook-ticketlist="clear"
+            aria-label="Clear all filters">
+            Clear Filters
+        </button>
+    </div>
+
+    <div class="cmp-ticketlist__loading" data-cmp-hook-ticketlist="loading" role="status" aria-live="polite" aria-label="Loading tickets">
+        Loading tickets...
+    </div>
+
+    <div class="cmp-ticketlist__error" data-cmp-hook-ticketlist="error" role="alert" aria-live="assertive"></div>
+
+    <div class="cmp-ticketlist__empty" data-cmp-hook-ticketlist="empty" role="status" aria-live="polite">
+        No tickets found. Try refining your search.
+    </div>
+
+    <table class="cmp-ticketlist__table" data-cmp-hook-ticketlist="table">
+        <thead class="cmp-ticketlist__thead">
+            <tr class="cmp-ticketlist__header-row">
+                <th class="cmp-ticketlist__header-cell">ID</th>
+                <th class="cmp-ticketlist__header-cell">Title</th>
+                <th class="cmp-ticketlist__header-cell">Description</th>
+                <th class="cmp-ticketlist__header-cell">Priority</th>
+                <th class="cmp-ticketlist__header-cell">Status</th>
+            </tr>
+        </thead>
+        <tbody class="cmp-ticketlist__tbody" data-cmp-hook-ticketlist="tbody">
+            <!-- Tickets will be inserted here by JavaScript -->
+        </tbody>
+    </table>
+</div>

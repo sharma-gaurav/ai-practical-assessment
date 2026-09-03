@@ -157,6 +157,7 @@
 @media (prefers-color-scheme: dark) {
   .cmp-ticketcreate {
     background-color: #1a1a1a;
+    color: #e0e0e0;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
 
     h1 {
@@ -200,6 +201,15 @@
     background-color: #1a3a1a;
     color: #6bff6b;
     border-left-color: #6bff6b;
+  }
+
+  .cmp-ticketcreate__button--primary {
+    background-color: #4040ff;
+    color: #ffffff;
+
+    &:hover:not(:disabled) {
+      background-color: #5555ff;
+    }
   }
 
   .cmp-ticketcreate__button--secondary {

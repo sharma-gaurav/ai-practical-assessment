@@ -37,28 +37,57 @@ What edge cases should I consider? Should I handle concurrent status changes?
 
 ---
 
-## Prompt 2: [To be documented]
+## Prompt 2: Ticket List Component Design
 
-**Date:** [To be filled]
+**Date:** 2026-09-03
 
-**Prompt Summary:** [Summary]
+**Prompt Summary:** Design ticket list component with search and filter functionality
 
-**Prompt Text:**
-```
-[Actual prompt]
-```
+**Requirements Context:**
+- FR4: Display all tickets in list view
+- FR11: Search by keyword (title/description)
+- FR12: Filter by status
+- FR13: Combined search and filter
+- Show: ID, Title, Description, Priority, Status
 
-**AI Response Summary:**
-[Response summary]
+**Design Decisions:**
+
+1. **Backend Approach**
+   - Single servlet at `/bin/api/tickets/list`
+   - JCR SQL2 queries with dynamic WHERE clauses
+   - Pagination support (page, limit)
+   - Accepts query params: search, status, page, limit
+
+2. **Frontend Approach**
+   - Vanilla JS component (no framework dependencies)
+   - Debounced search (300ms)
+   - Real-time filtering
+   - MutationObserver for AEM compatibility
+
+3. **Component Structure**
+   - AEM component in "AI Practical Assessment - Content" group
+   - Directory-based dialog: `_cq_dialog/.content.xml`
+   - Coral UI form fields (numberfield, checkbox)
+   - HTL template with data attributes
+
+4. **Styling**
+   - BEM naming convention
+   - Color-coded badges (priority, status)
+   - Responsive table (mobile-friendly)
+   - Dark mode support
 
 **What I Accepted:**
-[Points accepted]
+- Component group unified across all components
+- Directory-based dialog structure for scalability
+- Debounced search for performance
+- Pagination for large datasets
 
 **What I Changed:**
-[Changes made]
+- Initial component groups (Forms/Lists) → unified to "Content"
+- Single file dialog → directory structure with `.content.xml`
+- Added Page Size configuration property
 
-**What I Rejected:**
-[Points rejected and why]
+**Status:** Design approved and implemented
 
 ---
 

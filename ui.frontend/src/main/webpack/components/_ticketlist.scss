@@ -1,0 +1,376 @@
+.cmp-ticketlist {
+    padding: 1.5rem;
+    background-color: var(--color-bg, #ffffff);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cmp-ticketlist__search-filter {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+
+    @media (max-width: 900px) {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    @media (max-width: 600px) {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+.cmp-ticketlist__search-group {
+    flex: 1 1 auto;
+    min-width: 300px;
+
+    @media (max-width: 900px) {
+        min-width: 100%;
+        width: 100%;
+    }
+}
+
+.cmp-ticketlist__search-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border, #cccccc);
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+
+    &:focus {
+        outline: none;
+        border-color: var(--color-primary, #0066cc);
+        box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        background-color: #333333;
+        color: #ffffff;
+        border-color: #555555;
+
+        &:focus {
+            border-color: #0088ff;
+        }
+    }
+}
+
+.cmp-ticketlist__filter-group {
+    flex: 0 1 auto;
+    min-width: 180px;
+    white-space: nowrap;
+
+    @media (max-width: 900px) {
+        min-width: 100%;
+        width: 100%;
+        white-space: normal;
+    }
+}
+
+.cmp-ticketlist__filter-select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border, #cccccc);
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: inherit;
+    background-color: var(--color-bg, #ffffff);
+    color: var(--color-text, #000000);
+    cursor: pointer;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+
+    &:focus {
+        outline: none;
+        border-color: var(--color-primary, #0066cc);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        background-color: #333333;
+        color: #ffffff;
+        border-color: #555555;
+    }
+}
+
+.cmp-ticketlist__clear-btn {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--color-secondary, #f0f0f0);
+    border: 1px solid var(--color-border, #cccccc);
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    flex: 0 0 auto;
+    white-space: nowrap;
+
+    @media (max-width: 900px) {
+        width: 100%;
+        white-space: normal;
+    }
+
+    &:hover {
+        background-color: var(--color-secondary-hover, #e0e0e0);
+    }
+
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        background-color: #444444;
+        border-color: #555555;
+        color: #ffffff;
+
+        &:hover {
+            background-color: #555555;
+        }
+    }
+}
+
+.cmp-ticketlist__loading {
+    padding: 2rem;
+    text-align: center;
+    color: var(--color-text-secondary, #666666);
+    font-size: 1rem;
+    display: none;
+}
+
+.cmp-ticketlist__error {
+    padding: 1rem;
+    background-color: #ffebee;
+    border: 1px solid #ef5350;
+    border-radius: 4px;
+    color: #c62828;
+    margin-bottom: 1rem;
+    display: none;
+
+    @media (prefers-color-scheme: dark) {
+        background-color: #5e1414;
+        border-color: #c62828;
+        color: #ff8a80;
+    }
+}
+
+.cmp-ticketlist__empty {
+    padding: 2rem;
+    text-align: center;
+    color: var(--color-text-secondary, #666666);
+    font-size: 1rem;
+    display: none;
+}
+
+.cmp-ticketlist__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    display: none;
+
+    @media (max-width: 768px) {
+        font-size: 0.85rem;
+    }
+}
+
+.cmp-ticketlist__thead {
+    background-color: var(--color-header-bg, #f5f5f5);
+
+    @media (prefers-color-scheme: dark) {
+        background-color: #2d2d2d;
+    }
+}
+
+.cmp-ticketlist__header-row {
+    border-bottom: 2px solid var(--color-border, #cccccc);
+}
+
+.cmp-ticketlist__header-cell {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-text, #000000);
+}
+
+.cmp-ticketlist__row {
+    border-bottom: 1px solid var(--color-border, #cccccc);
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: var(--color-hover-bg, #f9f9f9);
+        cursor: pointer;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: #3a3a3a;
+        }
+    }
+}
+
+.cmp-ticketlist__cell {
+    padding: 0.75rem 1rem;
+    color: var(--color-text, #000000);
+
+    @media (max-width: 768px) {
+        padding: 0.5rem;
+    }
+
+    &--id {
+        font-weight: 500;
+        color: var(--color-primary, #0066cc);
+        font-family: monospace;
+        font-size: 0.9rem;
+    }
+
+    &--title {
+        font-weight: 500;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &--description {
+        max-width: 300px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: var(--color-text-secondary, #666666);
+    }
+
+    &--priority,
+    &--status {
+        text-align: left;
+    }
+}
+
+.cmp-ticketlist__priority {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 3px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+
+    &--high {
+        background-color: #ffcdd2;
+        color: #b71c1c;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: #5e1414;
+            color: #ff8a80;
+        }
+    }
+
+    &--medium {
+        background-color: #fff3e0;
+        color: #e65100;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: #4a2511;
+            color: #ffb74d;
+        }
+    }
+
+    &--low {
+        background-color: #e8f5e9;
+        color: #1b5e20;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: #1b5e20;
+            color: #81c784;
+        }
+    }
+}
+
+.cmp-ticketlist__status {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 3px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: capitalize;
+
+    &--open {
+        background-color: #e3f2fd;
+        color: #1565c0;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: #1a3a52;
+            color: #64b5f6;
+        }
+    }
+
+    &--in-progress {
+        background-color: #f3e5f5;
+        color: #6a1b9a;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: #4a148c;
+            color: #ce93d8;
+        }
+    }
+
+    &--resolved {
+        background-color: #e0f2f1;
+        color: #00695c;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: #004d40;
+            color: #4db6ac;
+        }
+    }
+
+    &--closed {
+        background-color: #f1f8e9;
+        color: #33691e;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: #33691e;
+            color: #9ccc65;
+        }
+    }
+
+    &--cancelled {
+        background-color: #fce4ec;
+        color: #880e4f;
+
+        @media (prefers-color-scheme: dark) {
+            background-color: #880e4f;
+            color: #f48fb1;
+        }
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .cmp-ticketlist {
+        background-color: #1e1e1e;
+        color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .cmp-ticketlist__thead {
+        background-color: #2d2d2d;
+    }
+
+    .cmp-ticketlist__header-cell {
+        color: #ffffff;
+    }
+
+    .cmp-ticketlist__cell {
+        color: #e0e0e0;
+
+        &--id {
+            color: #64b5f6;
+        }
+    }
+
+    .cmp-ticketlist__loading,
+    .cmp-ticketlist__empty {
+        color: #a0a0a0;
+    }
+}
