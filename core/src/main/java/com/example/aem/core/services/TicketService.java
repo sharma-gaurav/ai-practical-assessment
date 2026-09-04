@@ -17,4 +17,36 @@ public interface TicketService {
      * @throws com.example.aem.core.exceptions.InvalidUserException if assignedTo user doesn't exist
      */
     Map<String, Object> create(String title, String description, String priority, String assignedTo);
+
+    /**
+     * Retrieves a ticket by ID
+     *
+     * @param ticketId the ticket ID
+     * @return Map containing ticket data
+     * @throws IllegalArgumentException if ticketId is null or empty
+     * @throws RuntimeException if ticket not found
+     */
+    Map<String, Object> read(String ticketId);
+
+    /**
+     * Updates ticket fields (title, description, priority, assignedTo)
+     *
+     * @param ticketId the ticket ID
+     * @param updates Map containing fields to update
+     * @return Map containing updated ticket data
+     * @throws IllegalArgumentException if updates are invalid
+     * @throws RuntimeException if ticket not found
+     */
+    Map<String, Object> update(String ticketId, Map<String, Object> updates);
+
+    /**
+     * Changes the ticket status (validates transition via StateTransitionValidator)
+     *
+     * @param ticketId the ticket ID
+     * @param newStatus the new status
+     * @throws IllegalArgumentException if newStatus is invalid
+     * @throws IllegalStateException if transition is not allowed
+     * @throws RuntimeException if ticket not found
+     */
+    void changeStatus(String ticketId, String newStatus);
 }

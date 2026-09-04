@@ -2,6 +2,7 @@ package com.example.aem.core.servlets;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -15,8 +16,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.example.aem.core.exceptions.InvalidUserException;
-import com.example.aem.core.services.TicketService;
+import com.example.aem.core.services.CommentService;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
@@ -24,18 +24,18 @@ import com.google.gson.JsonSyntaxException;
 @Component(
     service = Servlet.class,
     property = {
-        "sling.servlet.methods=POST",
-        "sling.servlet.paths=/bin/api/tickets",
-        "service.ranking=1000"
+        "sling.servlet.methods=GET,POST",
+        "sling.servlet.paths=/bin/api/tickets/comments",
+        "service.ranking=2000"
     }
 )
-public class TicketCreateServlet implements Servlet {
+public class CommentServlet implements Servlet {
 
-    private static final Logger logger = LoggerFactory.getLogger(TicketCreateServlet.class);
+    private static final Logger logger = LoggerFactory.getLogger(CommentServlet.class);
     private static final Gson gson = new Gson();
 
     @Reference
-    private TicketService ticketService;
+    private CommentService commentService;
 
     @Override
     public void init(javax.servlet.ServletConfig config) throws javax.servlet.ServletException {
@@ -48,107 +48,103 @@ public class TicketCreateServlet implements Servlet {
         SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
         SlingHttpServletResponse slingResponse = (SlingHttpServletResponse) response;
 
-        if ("POST".equals(slingRequest.getMethod())) {
+        if ("GET".equals(slingRequest.getMethod())) {
+            doGet(slingRequest, slingResponse);
+        } else if ("POST".equals(slingRequest.getMethod())) {
             doPost(slingRequest, slingResponse);
         } else {
             slingResponse.sendError(SlingHttpServletResponse.SC_METHOD_NOT_ALLOWED);
         }
     }
 
+    private void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
+        try {
+            // Extract ticket ID from query parameter or request path
+            String ticketId = request.getParameter("id");
+
+            if (StringUtils.isBlank(ticketId)) {
+                response.setStatus(SlingHttpServletResponse.SC_BAD_REQUEST);
+                writeErrorResponse(response, "Ticket ID is required", null);
+                return;
+            }
+
+            try {
+                List<Map<String, Object>> comments = commentService.getComments(ticketId);
+                response.setStatus(SlingHttpServletResponse.SC_OK);
+                writeSuccessResponse(response, comments);
+            } catch (Exception e) {
+                logger.error("Error retrieving comments for ticket: {}", ticketId, e);
+                response.setStatus(SlingHttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                writeErrorResponse(response, "Failed to retrieve comments", null);
+            }
+        } catch (Exception e) {
+            logger.error("Unexpected error in CommentServlet GET", e);
+            response.setStatus(SlingHttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            writeErrorResponse(response, "Server error", null);
+        }
+    }
+
     private void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
         try {
-            // 1. Read and parse JSON from request body
+            // Read and parse JSON from request body
             String requestBody = request.getReader()
                 .lines()
                 .collect(Collectors.joining(System.lineSeparator()));
 
             JsonObject requestJson = gson.fromJson(requestBody, JsonObject.class);
 
-            // 2. Extract parameters from JSON
-            String title = requestJson.has("title") ? requestJson.get("title").getAsString() : null;
-            String description = requestJson.has("description") ? requestJson.get("description").getAsString() : null;
-            String priority = requestJson.has("priority") ? requestJson.get("priority").getAsString() : null;
-            String assignedTo = requestJson.has("assignedto") ? requestJson.get("assignedto").getAsString() : null;
+            String ticketId = requestJson.has("id") ? requestJson.get("id").getAsString() : null;
+            String message = requestJson.has("message") ? requestJson.get("message").getAsString() : null;
 
-            // 3. Validate input
-            Map<String, String> errors = validateInput(title, description, priority, assignedTo);
+            // Validate inputs
+            Map<String, String> errors = new HashMap<>();
+            if (StringUtils.isBlank(ticketId)) {
+                errors.put("id", "Ticket ID is required");
+            }
+            if (StringUtils.isBlank(message)) {
+                errors.put("message", "Comment message is required");
+            }
+
             if (!errors.isEmpty()) {
                 response.setStatus(SlingHttpServletResponse.SC_BAD_REQUEST);
                 writeErrorResponse(response, "Validation failed", errors);
                 return;
             }
 
-            // 4. Call service to create ticket
             try {
-                Map<String, Object> ticket = ticketService.create(title.trim(), description.trim(), priority, assignedTo);
+                String createdBy = request.getResourceResolver().getUserID();
+                Map<String, Object> comment = commentService.addComment(ticketId, message.trim(), createdBy);
                 response.setStatus(SlingHttpServletResponse.SC_CREATED);
-                writeSuccessResponse(response, ticket);
-            } catch (InvalidUserException e) {
-                logger.warn("Invalid user provided: {}", assignedTo);
-                response.setStatus(SlingHttpServletResponse.SC_BAD_REQUEST);
-                Map<String, String> fieldErrors = new HashMap<>();
-                fieldErrors.put("assignedto", "User does not exist");
-                writeErrorResponse(response, "Validation failed", fieldErrors);
+                response.setContentType("application/json");
+                JsonObject jsonResponse = new JsonObject();
+                jsonResponse.addProperty("success", true);
+                jsonResponse.add("comment", gson.toJsonTree(comment));
+                response.getWriter().write(gson.toJson(jsonResponse));
             } catch (IllegalArgumentException e) {
                 logger.warn("Validation error: {}", e.getMessage());
                 response.setStatus(SlingHttpServletResponse.SC_BAD_REQUEST);
-                Map<String, String> fieldErrors = new HashMap<>();
-                fieldErrors.put("general", e.getMessage());
-                writeErrorResponse(response, "Validation failed", fieldErrors);
+                writeErrorResponse(response, e.getMessage(), null);
             } catch (Exception e) {
-                logger.error("Failed to create ticket", e);
+                logger.error("Error adding comment to ticket: {}", ticketId, e);
                 response.setStatus(SlingHttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                writeErrorResponse(response, "Failed to create ticket", null);
+                writeErrorResponse(response, "Failed to add comment", null);
             }
-
         } catch (JsonSyntaxException e) {
             logger.warn("Invalid JSON in request body", e);
             response.setStatus(SlingHttpServletResponse.SC_BAD_REQUEST);
             writeErrorResponse(response, "Invalid JSON in request body", null);
         } catch (Exception e) {
-            logger.error("Error processing request", e);
+            logger.error("Unexpected error in CommentServlet POST", e);
             response.setStatus(SlingHttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            writeErrorResponse(response, "Failed to process request", null);
+            writeErrorResponse(response, "Server error", null);
         }
     }
 
-    private Map<String, String> validateInput(String title, String description, String priority, String assignedTo) {
-        Map<String, String> errors = new HashMap<>();
-
-        if (StringUtils.isBlank(title)) {
-            errors.put("title", "Title is required");
-        } else if (title.length() > 255) {
-            errors.put("title", "Title must not exceed 255 characters");
-        }
-
-        if (StringUtils.isBlank(description)) {
-            errors.put("description", "Description is required");
-        } else if (description.length() > 5000) {
-            errors.put("description", "Description must not exceed 5000 characters");
-        }
-
-        if (StringUtils.isBlank(priority)) {
-            errors.put("priority", "Priority is required");
-        } else if (!isValidPriority(priority)) {
-            errors.put("priority", "Priority must be one of: HIGH, MEDIUM, LOW");
-        }
-
-        if (StringUtils.isBlank(assignedTo)) {
-            errors.put("assignedto", "Assignee is required");
-        }
-
-        return errors;
-    }
-
-    private boolean isValidPriority(String priority) {
-        return "HIGH".equals(priority) || "MEDIUM".equals(priority) || "LOW".equals(priority);
-    }
-
-    private void writeSuccessResponse(SlingHttpServletResponse response, Map<String, Object> ticket) throws IOException {
+    private void writeSuccessResponse(SlingHttpServletResponse response, List<Map<String, Object>> comments) throws IOException {
         response.setContentType("application/json");
         JsonObject jsonResponse = new JsonObject();
         jsonResponse.addProperty("success", true);
-        jsonResponse.add("ticket", gson.toJsonTree(ticket));
+        jsonResponse.add("comments", gson.toJsonTree(comments));
         response.getWriter().write(gson.toJson(jsonResponse));
     }
 
@@ -181,7 +177,7 @@ public class TicketCreateServlet implements Servlet {
 
     @Override
     public String getServletInfo() {
-        return "Ticket Creation Servlet";
+        return "Comment Servlet";
     }
 
     @Override

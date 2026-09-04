@@ -19,6 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.example.aem.core.exceptions.InvalidUserException;
+import com.example.aem.core.services.CommentService;
+import com.example.aem.core.services.StateTransitionValidator;
 import com.example.aem.core.services.SystemResourceResolverService;
 import com.example.aem.core.services.TicketService;
 
@@ -31,6 +33,12 @@ public class TicketServiceImpl implements TicketService {
 
     @Reference
     private SystemResourceResolverService systemResolverService;
+
+    @Reference
+    private StateTransitionValidator stateTransitionValidator;
+
+    @Reference
+    private CommentService commentService;
 
     @Override
     public Map<String, Object> create(String title, String description, String priority, String assignedTo) {
@@ -189,6 +197,213 @@ public class TicketServiceImpl implements TicketService {
             Node parentNode = session.getNode(parentPath.isEmpty() || "/".equals(parentPath) ? "/" : parentPath);
             String nodeName = path.substring(path.lastIndexOf('/') + 1);
             return parentNode.addNode(nodeName, "nt:unstructured");
+        }
+    }
+
+    @Override
+    public Map<String, Object> read(String ticketId) {
+        logger.debug("Reading ticket with ID: {}", ticketId);
+
+        if (StringUtils.isBlank(ticketId)) {
+            throw new IllegalArgumentException("Ticket ID is required");
+        }
+
+        try {
+            return systemResolverService.executeWithSystemResolver(SERVICE_USER, resolver -> {
+                Session session = resolver.adaptTo(Session.class);
+                if (session == null) {
+                    throw new RuntimeException("Cannot adapt ResourceResolver to Session");
+                }
+
+                String ticketPath = TICKETS_ROOT_PATH + "/" + ticketId;
+                try {
+                    Node ticketNode = session.getNode(ticketPath);
+                    Node contentNode = ticketNode.getNode("jcr:content");
+
+                    // Build ticket map
+                    Map<String, Object> ticket = new HashMap<>();
+                    ticket.put("id", ticketId);
+                    ticket.put("title", contentNode.getProperty("jcr:title").getString());
+                    ticket.put("description", contentNode.getProperty("description").getString());
+                    ticket.put("priority", contentNode.getProperty("priority").getString());
+                    ticket.put("status", contentNode.getProperty("status").getString());
+                    ticket.put("assignedTo", contentNode.getProperty("assignedTo").getString());
+                    ticket.put("createdBy", contentNode.getProperty("createdBy").getString());
+                    ticket.put("createdAt", ISO8601.format(contentNode.getProperty("createdAt").getDate()));
+                    ticket.put("updatedAt", ISO8601.format(contentNode.getProperty("updatedAt").getDate()));
+
+                    // Include comments
+                    ticket.put("comments", commentService.getComments(ticketId));
+
+                    return ticket;
+                } catch (javax.jcr.PathNotFoundException e) {
+                    throw new RuntimeException("Ticket not found: " + ticketId, e);
+                }
+            });
+        } catch (Exception e) {
+            logger.error("Error reading ticket: {}", ticketId, e);
+            throw new RuntimeException("Failed to read ticket: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public Map<String, Object> update(String ticketId, Map<String, Object> updates) {
+        logger.debug("Updating ticket with ID: {}", ticketId);
+
+        if (StringUtils.isBlank(ticketId)) {
+            throw new IllegalArgumentException("Ticket ID is required");
+        }
+        if (updates == null || updates.isEmpty()) {
+            throw new IllegalArgumentException("No updates provided");
+        }
+
+        // Validate update fields
+        Map<String, String> errors = new HashMap<>();
+        if (updates.containsKey("title")) {
+            String title = (String) updates.get("title");
+            if (StringUtils.isBlank(title)) {
+                errors.put("title", "Title is required");
+            } else if (title.length() > 255) {
+                errors.put("title", "Title must not exceed 255 characters");
+            }
+        }
+
+        if (updates.containsKey("description")) {
+            String description = (String) updates.get("description");
+            if (StringUtils.isBlank(description)) {
+                errors.put("description", "Description is required");
+            } else if (description.length() > 5000) {
+                errors.put("description", "Description must not exceed 5000 characters");
+            }
+        }
+
+        if (updates.containsKey("priority")) {
+            String priority = (String) updates.get("priority");
+            if (StringUtils.isBlank(priority)) {
+                errors.put("priority", "Priority is required");
+            } else if (!isValidPriority(priority)) {
+                errors.put("priority", "Priority must be one of: HIGH, MEDIUM, LOW");
+            }
+        }
+
+        if (updates.containsKey("assignedTo")) {
+            String assignedTo = (String) updates.get("assignedTo");
+            if (StringUtils.isBlank(assignedTo)) {
+                errors.put("assignedTo", "Assignee is required");
+            } else if (!userExists(assignedTo)) {
+                errors.put("assignedTo", "User does not exist: " + assignedTo);
+            }
+        }
+
+        if (!errors.isEmpty()) {
+            throw new IllegalArgumentException("Validation failed: " + errors);
+        }
+
+        try {
+            return systemResolverService.executeWithSystemResolver(SERVICE_USER, resolver -> {
+                Session session = resolver.adaptTo(Session.class);
+                if (session == null) {
+                    throw new RuntimeException("Cannot adapt ResourceResolver to Session");
+                }
+
+                String ticketPath = TICKETS_ROOT_PATH + "/" + ticketId;
+                try {
+                    Node ticketNode = session.getNode(ticketPath);
+                    Node contentNode = ticketNode.getNode("jcr:content");
+
+                    Calendar now = Calendar.getInstance();
+                    contentNode.setProperty("cq:lastModified", now);
+                    contentNode.setProperty("cq:lastModifiedBy", resolver.getUserID());
+                    contentNode.setProperty("updatedAt", now);
+
+                    // Apply updates
+                    if (updates.containsKey("title")) {
+                        contentNode.setProperty("jcr:title", (String) updates.get("title"));
+                    }
+                    if (updates.containsKey("description")) {
+                        contentNode.setProperty("description", (String) updates.get("description"));
+                    }
+                    if (updates.containsKey("priority")) {
+                        contentNode.setProperty("priority", (String) updates.get("priority"));
+                    }
+                    if (updates.containsKey("assignedTo")) {
+                        contentNode.setProperty("assignedTo", (String) updates.get("assignedTo"));
+                    }
+
+                    session.save();
+
+                    // Return updated ticket
+                    Map<String, Object> ticket = new HashMap<>();
+                    ticket.put("id", ticketId);
+                    ticket.put("title", contentNode.getProperty("jcr:title").getString());
+                    ticket.put("description", contentNode.getProperty("description").getString());
+                    ticket.put("priority", contentNode.getProperty("priority").getString());
+                    ticket.put("status", contentNode.getProperty("status").getString());
+                    ticket.put("assignedTo", contentNode.getProperty("assignedTo").getString());
+                    ticket.put("createdBy", contentNode.getProperty("createdBy").getString());
+                    ticket.put("createdAt", ISO8601.format(contentNode.getProperty("createdAt").getDate()));
+                    ticket.put("updatedAt", ISO8601.format(contentNode.getProperty("updatedAt").getDate()));
+
+                    return ticket;
+                } catch (javax.jcr.PathNotFoundException e) {
+                    throw new RuntimeException("Ticket not found: " + ticketId, e);
+                }
+            });
+        } catch (Exception e) {
+            logger.error("Error updating ticket: {}", ticketId, e);
+            throw new RuntimeException("Failed to update ticket: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void changeStatus(String ticketId, String newStatus) {
+        logger.debug("Changing status for ticket: {} to: {}", ticketId, newStatus);
+
+        if (StringUtils.isBlank(ticketId)) {
+            throw new IllegalArgumentException("Ticket ID is required");
+        }
+        if (StringUtils.isBlank(newStatus)) {
+            throw new IllegalArgumentException("Status is required");
+        }
+
+        try {
+            systemResolverService.executeWithSystemResolver(SERVICE_USER, resolver -> {
+                Session session = resolver.adaptTo(Session.class);
+                if (session == null) {
+                    throw new RuntimeException("Cannot adapt ResourceResolver to Session");
+                }
+
+                String ticketPath = TICKETS_ROOT_PATH + "/" + ticketId;
+                try {
+                    Node ticketNode = session.getNode(ticketPath);
+                    Node contentNode = ticketNode.getNode("jcr:content");
+
+                    String currentStatus = contentNode.getProperty("status").getString();
+
+                    // Validate transition
+                    stateTransitionValidator.validateTransition(currentStatus, newStatus);
+
+                    // Update status
+                    Calendar now = Calendar.getInstance();
+                    contentNode.setProperty("status", newStatus);
+                    contentNode.setProperty("cq:lastModified", now);
+                    contentNode.setProperty("cq:lastModifiedBy", resolver.getUserID());
+                    contentNode.setProperty("updatedAt", now);
+
+                    session.save();
+                    logger.info("Ticket {} status changed from {} to {}", ticketId, currentStatus, newStatus);
+
+                    return null;
+                } catch (javax.jcr.PathNotFoundException e) {
+                    throw new RuntimeException("Ticket not found: " + ticketId, e);
+                }
+            });
+        } catch (IllegalStateException e) {
+            logger.warn("Invalid status transition for ticket {}: {}", ticketId, e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            logger.error("Error changing status for ticket: {}", ticketId, e);
+            throw new RuntimeException("Failed to change status: " + e.getMessage(), e);
         }
     }
 

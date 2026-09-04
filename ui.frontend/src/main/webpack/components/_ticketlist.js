@@ -2,7 +2,7 @@ window.TicketList = (function() {
     'use strict';
 
     const COMPONENT_SELECTOR = '[data-cmp-is="ticketlist"]';
-    const API_ENDPOINT = '/bin/api/tickets/list';
+    const API_ENDPOINT = '/bin/api/tickets';
     const DEFAULT_LIMIT = 20;
 
     function init() {

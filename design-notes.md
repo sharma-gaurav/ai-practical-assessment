@@ -270,20 +270,53 @@ CommentService (interface)
 
 ### Sling Servlet Endpoints
 
+**Single Ticket Servlet at /bin/api/tickets handles all CRUD operations:**
+
 ```
-GET  /bin/api/tickets
-POST /bin/api/tickets
-GET  /bin/api/tickets/{id}
-PUT  /bin/api/tickets/{id}
-PUT  /bin/api/tickets/{id}/status
-GET  /bin/api/tickets/{id}/comments
-POST /bin/api/tickets/{id}/comments
+GET  /bin/api/tickets                         - List all tickets (with optional search/filter)
+GET  /bin/api/tickets?id=<ticket-id>          - Get ticket detail with comments
+POST /bin/api/tickets                         - Create new ticket (JSON body)
+PUT  /bin/api/tickets?id=<ticket-id>          - Update ticket fields or change status (JSON body)
 ```
 
-- Each servlet handles single resource/method
-- Input validation and error handling
-- Consistent JSON response format
-- HTTP status codes: 200 (OK), 201 (Created), 400 (Bad Request), 404 (Not Found), 409 (Conflict), 500 (Server Error)
+**Separate Servlet for Comments:**
+```
+GET  /bin/api/tickets/comments?id=<ticket-id> - Get comments for ticket
+POST /bin/api/tickets/comments                - Add comment (JSON: {id, message})
+```
+
+**Request/Response Details:**
+
+**List Tickets (GET /bin/api/tickets):**
+- Optional query params: `?search=keyword&status=Open&page=0&limit=20`
+- Returns: `{success, tickets: [{id, title, description, priority, status, assignedTo}], page, limit, total}`
+
+**Get Ticket Detail (GET /bin/api/tickets?id=<ticket-id>):**
+- Required query param: `?id=<ticket-id>`
+- Returns: `{success, ticket: {id, title, description, priority, status, assignedTo, createdBy, createdAt, updatedAt, comments: [...]}}`
+
+**Create Ticket (POST /bin/api/tickets):**
+- Body: `{title, description, priority, assignedto}` (all required, no query params)
+- Returns: `{success, ticket: {id, title, ...}}` (201 Created)
+
+**Update Ticket (PUT /bin/api/tickets?id=<ticket-id>):**
+- Query param: `?id=<ticket-id>` (required)
+- Body Type A (Update Fields): `{title?, description?, priority?, assignedTo?}`
+- Body Type B (Change Status): `{newStatus}`
+- Returns: `{success, ticket: {...}}` (200 OK) or `{success: false, error, details}` (409 Conflict if invalid status)
+
+**Add/Get Comments:**
+- POST /bin/api/tickets/comments with `{id, message}` 
+- GET /bin/api/tickets/comments?id=<ticket-id>`
+- Returns: `{success, comment/comments: [...]}`
+
+**HTTP Status Codes:**
+- 200: OK (GET successful, PUT successful)
+- 201: Created (POST successful)
+- 400: Bad Request (validation failed, missing parameters)
+- 404: Not Found (resource not found)
+- 409: Conflict (invalid state transition)
+- 500: Server Error (unexpected error)
 
 ## Database Design
 

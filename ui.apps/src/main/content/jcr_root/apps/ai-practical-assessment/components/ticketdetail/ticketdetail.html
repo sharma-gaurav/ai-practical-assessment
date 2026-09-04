@@ -1,0 +1,179 @@
+<div class="cmp-ticketdetail ${properties.styleId} ${properties.cssClass}" data-cmp-is="ticketdetail">
+  <div class="cmp-ticketdetail__loading" data-cmp-hook-ticketdetail="loading" role="status" aria-live="polite">
+    Loading ticket...
+  </div>
+
+  <div class="cmp-ticketdetail__error" data-cmp-hook-ticketdetail="error" role="alert" aria-live="assertive" style="display: none;"></div>
+
+  <div class="cmp-ticketdetail__container" data-cmp-hook-ticketdetail="container" style="display: none;">
+    <!-- Header with Title and Actions -->
+    <div class="cmp-ticketdetail__header">
+      <h1 class="cmp-ticketdetail__title" data-cmp-hook-ticketdetail="title"></h1>
+      <button class="cmp-ticketdetail__button cmp-ticketdetail__button--primary"
+              data-cmp-hook-ticketdetail="edit-btn"
+              type="button">
+        Edit
+      </button>
+    </div>
+
+    <!-- View Mode -->
+    <div class="cmp-ticketdetail__view-mode" data-cmp-hook-ticketdetail="view-mode">
+      <div class="cmp-ticketdetail__metadata">
+        <div class="cmp-ticketdetail__metadata-row">
+          <span class="cmp-ticketdetail__label">Status:</span>
+          <span class="cmp-ticketdetail__status" data-cmp-hook-ticketdetail="status"></span>
+        </div>
+        <div class="cmp-ticketdetail__metadata-row">
+          <span class="cmp-ticketdetail__label">Priority:</span>
+          <span class="cmp-ticketdetail__priority" data-cmp-hook-ticketdetail="priority"></span>
+        </div>
+        <div class="cmp-ticketdetail__metadata-row">
+          <span class="cmp-ticketdetail__label">Assigned To:</span>
+          <span class="cmp-ticketdetail__assignee" data-cmp-hook-ticketdetail="assignedto"></span>
+        </div>
+        <div class="cmp-ticketdetail__metadata-row">
+          <span class="cmp-ticketdetail__label">Created:</span>
+          <span class="cmp-ticketdetail__created" data-cmp-hook-ticketdetail="created"></span>
+        </div>
+        <div class="cmp-ticketdetail__metadata-row">
+          <span class="cmp-ticketdetail__label">Last Updated:</span>
+          <span class="cmp-ticketdetail__updated" data-cmp-hook-ticketdetail="updated"></span>
+        </div>
+      </div>
+
+      <div class="cmp-ticketdetail__description-section">
+        <h3 class="cmp-ticketdetail__section-title">Description</h3>
+        <div class="cmp-ticketdetail__description" data-cmp-hook-ticketdetail="description"></div>
+      </div>
+    </div>
+
+    <!-- Edit Mode -->
+    <div class="cmp-ticketdetail__edit-mode" data-cmp-hook-ticketdetail="edit-mode" style="display: none;">
+      <form class="cmp-ticketdetail__form" data-cmp-hook-ticketdetail="form">
+        <div class="cmp-ticketdetail__form-group">
+          <label for="detail-title" class="cmp-ticketdetail__label">Title *</label>
+          <input type="text"
+                 id="detail-title"
+                 class="cmp-ticketdetail__input"
+                 name="title"
+                 maxlength="255"
+                 required
+                 data-cmp-hook-ticketdetail="form-title">
+          <small class="cmp-ticketdetail__help-text">Max 255 characters</small>
+          <span class="cmp-ticketdetail__error-message" data-cmp-hook-ticketdetail="error-title"></span>
+        </div>
+
+        <div class="cmp-ticketdetail__form-group">
+          <label for="detail-description" class="cmp-ticketdetail__label">Description *</label>
+          <textarea id="detail-description"
+                    class="cmp-ticketdetail__textarea"
+                    name="description"
+                    rows="6"
+                    maxlength="5000"
+                    required
+                    data-cmp-hook-ticketdetail="form-description"></textarea>
+          <small class="cmp-ticketdetail__help-text">Max 5000 characters</small>
+          <span class="cmp-ticketdetail__error-message" data-cmp-hook-ticketdetail="error-description"></span>
+        </div>
+
+        <div class="cmp-ticketdetail__form-group">
+          <label for="detail-priority" class="cmp-ticketdetail__label">Priority *</label>
+          <select id="detail-priority"
+                  class="cmp-ticketdetail__select"
+                  name="priority"
+                  required
+                  data-cmp-hook-ticketdetail="form-priority">
+            <option value="">-- Select Priority --</option>
+            <option value="HIGH">High</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="LOW">Low</option>
+          </select>
+          <span class="cmp-ticketdetail__error-message" data-cmp-hook-ticketdetail="error-priority"></span>
+        </div>
+
+        <div class="cmp-ticketdetail__form-group">
+          <label for="detail-assignedto" class="cmp-ticketdetail__label">Assigned To *</label>
+          <select id="detail-assignedto"
+                  class="cmp-ticketdetail__select"
+                  name="assignedto"
+                  required
+                  data-cmp-hook-ticketdetail="form-assignedto">
+            <option value="">-- Select User --</option>
+            <option value="admin">Administrator</option>
+          </select>
+          <span class="cmp-ticketdetail__error-message" data-cmp-hook-ticketdetail="error-assignedto"></span>
+        </div>
+
+        <div class="cmp-ticketdetail__form-actions">
+          <button type="submit"
+                  class="cmp-ticketdetail__button cmp-ticketdetail__button--primary"
+                  data-cmp-hook-ticketdetail="save-btn">
+            Save Changes
+          </button>
+          <button type="button"
+                  class="cmp-ticketdetail__button cmp-ticketdetail__button--secondary"
+                  data-cmp-hook-ticketdetail="cancel-btn">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Status Change Section -->
+    <div class="cmp-ticketdetail__status-section">
+      <h3 class="cmp-ticketdetail__section-title">Change Status</h3>
+      <div class="cmp-ticketdetail__status-group">
+        <label for="detail-status-select" class="cmp-ticketdetail__label">New Status:</label>
+        <select id="detail-status-select"
+                class="cmp-ticketdetail__select"
+                data-cmp-hook-ticketdetail="status-select">
+          <option value="">-- Select New Status --</option>
+        </select>
+        <button type="button"
+                class="cmp-ticketdetail__button cmp-ticketdetail__button--primary"
+                data-cmp-hook-ticketdetail="status-change-btn">
+          Change Status
+        </button>
+        <span class="cmp-ticketdetail__error-message" data-cmp-hook-ticketdetail="error-status"></span>
+      </div>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="cmp-ticketdetail__comments-section">
+      <h3 class="cmp-ticketdetail__section-title">Comments</h3>
+
+      <div class="cmp-ticketdetail__comments-list" data-cmp-hook-ticketdetail="comments-list">
+        <!-- Comments will be rendered here -->
+      </div>
+
+      <form class="cmp-ticketdetail__comment-form" data-cmp-hook-ticketdetail="comment-form">
+        <div class="cmp-ticketdetail__form-group">
+          <label for="detail-comment-text" class="cmp-ticketdetail__label">Add a Comment</label>
+          <textarea id="detail-comment-text"
+                    class="cmp-ticketdetail__textarea"
+                    name="message"
+                    rows="4"
+                    placeholder="Enter your comment..."
+                    required
+                    data-cmp-hook-ticketdetail="comment-text"></textarea>
+          <span class="cmp-ticketdetail__error-message" data-cmp-hook-ticketdetail="error-comment"></span>
+        </div>
+
+        <button type="submit"
+                class="cmp-ticketdetail__button cmp-ticketdetail__button--primary"
+                data-cmp-hook-ticketdetail="add-comment-btn">
+          Add Comment
+        </button>
+      </form>
+    </div>
+
+    <!-- Back to List Link -->
+    <div class="cmp-ticketdetail__footer">
+      <a href="/content/ai-practical-assessment/tickets.html"
+         class="cmp-ticketdetail__button cmp-ticketdetail__button--secondary"
+         role="button">
+        Back to Ticket List
+      </a>
+    </div>
+  </div>
+</div>
