@@ -5,6 +5,14 @@
         "create path (nt:unstructured) /content/dam/ai-practical-assessment/jcr:content",
         "set properties on /content/dam/ai-practical-assessment/jcr:content\n  set cq:conf{String} to /conf/ai-practical-assessment\n  set jcr:title{String} to \"AI Practical Assessment\"\nend",
         "create path (nt:unstructured) /content/ai-practical-assessment/tickets",
-        "set ACL for ai-practical-assessment-ticketservice\n  allow jcr:read,rep:write on /content/ai-practical-assessment\n  allow jcr:all on /content/ai-practical-assessment/tickets\n  allow jcr:read on /home/users\n  allow jcr:read on /home/groups\nend"
+        "set ACL for ai-practical-assessment-ticketservice\n  allow jcr:read,rep:write on /content/ai-practical-assessment\n  allow jcr:all on /content/ai-practical-assessment/tickets\n  allow jcr:read on /home/users\n  allow jcr:read on /home/groups\nend",
+        "create group support-user with path /home/groups/ai-practical-assessment",
+        "create group support-agent with path /home/groups/ai-practical-assessment",
+        "create group support-manager with path /home/groups/ai-practical-assessment",
+        "add support-user to group support-agent",
+        "add support-agent to group support-manager",
+        "set ACL for support-user\n  allow jcr:read on /content/ai-practical-assessment/tickets\nend",
+        "set ACL for support-agent\n  allow jcr:read,jcr:modifyProperties on /content/ai-practical-assessment/tickets\n  allow jcr:addChildNodes on /content/ai-practical-assessment/tickets\n  allow jcr:read on /content/ai-practical-assessment/create-ticket\nend",
+        "set ACL for support-manager\n  allow jcr:all on /content/ai-practical-assessment/tickets\nend"
     ]
 }
