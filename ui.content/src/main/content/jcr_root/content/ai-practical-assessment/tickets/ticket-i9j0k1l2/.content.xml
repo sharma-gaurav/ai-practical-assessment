@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        cq:lastModified="{Date}2026-09-01T09:15:00.000+05:30"
+        cq:lastModifiedBy="ai-practical-assessment-ticketservice"
+        cq:template="/conf/ai-practical-assessment/settings/wcm/templates/ticket-content"
+        jcr:description="Add localization support for German users"
+        jcr:primaryType="cq:PageContent"
+        jcr:title="i18n support for German"
+        sling:resourceType="ai-practical-assessment/components/page"
+        assignedTo="admin"
+        createdAt="{Date}2026-08-28T16:20:45.000+05:30"
+        createdBy="ai-practical-assessment-ticketservice"
+        description="Implement German language translation for the user interface. This includes menu items, labels, error messages, and help text."
+        priority="LOW"
+        status="Open"
+        updatedAt="{Date}2026-09-01T09:15:00.000+05:30"/>
+</jcr:root>

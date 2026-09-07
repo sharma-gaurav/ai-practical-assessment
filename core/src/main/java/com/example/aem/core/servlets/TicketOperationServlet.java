@@ -232,8 +232,9 @@ public class TicketOperationServlet implements Servlet {
                 }
 
                 if (StringUtils.isNotBlank(searchKeyword)) {
-                    queryBuilder.append(" AND ([jcr:content/jcr:title] LIKE '%").append(searchKeyword)
-                        .append("%' OR [jcr:content/description] LIKE '%").append(searchKeyword).append("%')");
+                    String escapedKeyword = searchKeyword.replace("'", "''").toLowerCase();
+                    queryBuilder.append(" AND (LOWER([jcr:content/jcr:title]) LIKE '%").append(escapedKeyword)
+                        .append("%' OR LOWER([jcr:content/description]) LIKE '%").append(escapedKeyword).append("%')");
                 }
 
                 logger.debug("Executing query: {}", queryBuilder.toString());

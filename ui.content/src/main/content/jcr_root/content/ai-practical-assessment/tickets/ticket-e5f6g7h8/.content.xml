@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        cq:lastModified="{Date}2026-09-06T14:30:00.000+05:30"
+        cq:lastModifiedBy="ai-practical-assessment-ticketservice"
+        cq:template="/conf/ai-practical-assessment/settings/wcm/templates/ticket-content"
+        jcr:description="Database connection pooling optimization"
+        jcr:primaryType="cq:PageContent"
+        jcr:title="Database performance tuning"
+        sling:resourceType="ai-practical-assessment/components/page"
+        assignedTo="admin"
+        createdAt="{Date}2026-09-02T08:45:10.000+05:30"
+        createdBy="ai-practical-assessment-ticketservice"
+        description="Need to optimize database connection pooling to reduce latency during peak hours. Current implementation exhausts connections under high load."
+        priority="MEDIUM"
+        status="In Progress"
+        updatedAt="{Date}2026-09-06T14:30:00.000+05:30"/>
+</jcr:root>

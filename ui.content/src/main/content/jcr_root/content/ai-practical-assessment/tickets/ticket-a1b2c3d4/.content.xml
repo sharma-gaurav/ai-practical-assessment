@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        cq:lastModified="{Date}2026-09-07T12:00:00.000+05:30"
+        cq:lastModifiedBy="ai-practical-assessment-ticketservice"
+        cq:template="/conf/ai-practical-assessment/settings/wcm/templates/ticket-content"
+        jcr:description="Login form not responding on mobile devices"
+        jcr:primaryType="cq:PageContent"
+        jcr:title="Mobile login issue"
+        sling:resourceType="ai-practical-assessment/components/page"
+        assignedTo="admin"
+        createdAt="{Date}2026-09-05T10:15:22.000+05:30"
+        createdBy="ai-practical-assessment-ticketservice"
+        description="Users report that the login form is unresponsive when accessed from mobile devices. The issue appears to be related to touch event handling."
+        priority="HIGH"
+        status="Open"
+        updatedAt="{Date}2026-09-07T12:00:00.000+05:30"/>
+</jcr:root>
