@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:rep="internal"
+    jcr:primaryType="rep:ACL">
+    <allow
+        jcr:primaryType="rep:GrantACE"
+        rep:principalName="ai-practical-assessment-ticketservice"
+        rep:privileges="{Name}[jcr:all]"/>
+    <allow1
+        jcr:primaryType="rep:GrantACE"
+        rep:principalName="support-user"
+        rep:privileges="{Name}[jcr:read]"/>
+    <allow2
+        jcr:primaryType="rep:GrantACE"
+        rep:principalName="support-agent"
+        rep:privileges="{Name}[jcr:read,jcr:modifyProperties,jcr:addChildNodes]"/>
+    <allow3
+        jcr:primaryType="rep:GrantACE"
+        rep:principalName="support-manager"
+        rep:privileges="{Name}[jcr:all]"/>
+</jcr:root>

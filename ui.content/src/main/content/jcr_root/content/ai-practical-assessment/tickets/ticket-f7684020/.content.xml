@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        cq:lastModified="{Date}2026-09-04T12:36:16.239+05:30"
+        cq:lastModifiedBy="ai-practical-assessment-ticketservice"
+        cq:template="/conf/ai-practical-assessment/settings/wcm/templates/ticket-content"
+        jcr:description="details"
+        jcr:primaryType="cq:PageContent"
+        jcr:title="Brief summary changed"
+        sling:resourceType="ai-practical-assessment/components/page"
+        assignedTo="admin"
+        createdAt="{Date}2026-09-03T20:07:27.524+05:30"
+        createdBy="ai-practical-assessment-ticketservice"
+        description="details changed"
+        priority="HIGH"
+        status="Open"
+        updatedAt="{Date}2026-09-04T12:36:16.239+05:30">
+        <comments jcr:primaryType="nt:unstructured">
+            <comment-e2896e0c
+                jcr:primaryType="nt:unstructured"
+                createdAt="{Date}2026-09-04T12:37:37.618+05:30"
+                createdBy="admin"
+                message="fasdfdf"/>
+            <comment-ac75c7fc
+                jcr:primaryType="nt:unstructured"
+                createdAt="{Date}2026-09-04T12:37:43.261+05:30"
+                createdBy="admin"
+                message="test"/>
+        </comments>
+    </jcr:content>
+</jcr:root>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:rep="internal" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
+    jcr:mixinTypes="[rep:AccessControllable]"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        cq:lastModified="{Date}2026-09-01T14:36:15.952+05:30"
+        cq:lastModifiedBy="admin"
+        cq:template="/conf/ai-practical-assessment/settings/wcm/templates/page-content"
+        jcr:primaryType="cq:PageContent"
+        jcr:title="Create Ticket"
+        sling:resourceType="ai-practical-assessment/components/page">
+        <root
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="ai-practical-assessment/components/container"
+            layout="responsiveGrid">
+            <container
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="ai-practical-assessment/components/container"
+                layout="responsiveGrid">
+                <title
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="ai-practical-assessment/components/title"/>
+                <container
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="ai-practical-assessment/components/container"
+                    layout="responsiveGrid">
+                    <ticketcreate
+                        jcr:created="{Date}2026-09-01T14:36:15.948+05:30"
+                        jcr:createdBy="admin"
+                        jcr:lastModified="{Date}2026-09-01T14:36:15.948+05:30"
+                        jcr:lastModifiedBy="admin"
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="ai-practical-assessment/components/ticketcreate"/>
+                </container>
+            </container>
+        </root>
+    </jcr:content>
+    <rep:policy/>
+</jcr:root>
