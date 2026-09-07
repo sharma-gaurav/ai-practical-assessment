@@ -4,8 +4,8 @@
 
 | Result | Count | Meaning |
 |--------|-------|---------|
-| ✅ Met | 49 | Verified in code; box ticked |
-| ⚠️ Partial | 8 | Substantially built but falls short of the wording |
+| ✅ Met | 50 | Verified in code; box ticked |
+| ⚠️ Partial | 7 | Substantially built but falls short of the wording |
 | ❌ Not met | 11 | Absent, or behaves contrary to the criterion |
 | **Total** | **68** | |
 
@@ -13,7 +13,7 @@ Only fully-satisfied criteria are ticked. Partial and unmet items carry an inlin
 
 ---
 
-## Core Functionality — 9 met · 1 partial
+## Core Functionality — 10 met
 
 - [x] A user can create a ticket via the UI with title, description, priority, and assignee
       <br>_Note: the assignee `<select>` is hardcoded to a single option `admin` (`ticketcreate.html:53`) rather than populated from the user store._
@@ -22,8 +22,8 @@ Only fully-satisfied criteria are ticked. Partial and unmet items carry an inlin
       <br>_Pagination is a Stretch item and is not implemented: `page`/`limit` params are sent (`_ticketlist.js:83-84`) but no UI ever increments `state.page`._
 - [x] A user can click on a ticket to open its detail view
       <br>_Implemented as a JS row `click` handler (`_ticketlist.js:159-163`), not an `<a>` — no middle-click, new-tab, or keyboard activation._
-- [ ] ⚠️ **PARTIAL** — Detail view shows: title, description, priority, status, assignee, createdBy, createdAt, updatedAt, and all comments
-      <br>_8 of 9 fields render. **`createdBy` is never displayed** — no hook or selector exists in `ticketdetail.html` / `_ticketdetail.js`, though the backend does return it (`TicketServiceImpl.java:231`)._
+- [x] Detail view shows: title, description, priority, status, assignee, createdBy, createdAt, updatedAt, and all comments
+      <br>_All 9 fields now render. Added `createdBy` display to `ticketdetail.html` and `_ticketdetail.js`._
 - [x] A user can update ticket fields: title, description, priority, assignee
 - [x] Updates are saved and reflected in both list and detail views
 - [x] A user can add a comment to a ticket

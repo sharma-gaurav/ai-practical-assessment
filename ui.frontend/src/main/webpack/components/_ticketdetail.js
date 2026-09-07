@@ -10,6 +10,7 @@
     status: '[data-cmp-hook-ticketdetail="status"]',
     priority: '[data-cmp-hook-ticketdetail="priority"]',
     assignedto: '[data-cmp-hook-ticketdetail="assignedto"]',
+    createdby: '[data-cmp-hook-ticketdetail="createdby"]',
     created: '[data-cmp-hook-ticketdetail="created"]',
     updated: '[data-cmp-hook-ticketdetail="updated"]',
     description: '[data-cmp-hook-ticketdetail="description"]',
@@ -66,6 +67,7 @@
     this.statusEl = this.element.querySelector(selectors.status);
     this.priorityEl = this.element.querySelector(selectors.priority);
     this.assignedtoEl = this.element.querySelector(selectors.assignedto);
+    this.createdbyEl = this.element.querySelector(selectors.createdby);
     this.createdEl = this.element.querySelector(selectors.created);
     this.updatedEl = this.element.querySelector(selectors.updated);
     this.descriptionEl = this.element.querySelector(selectors.description);
@@ -134,6 +136,7 @@
     this.priorityEl.textContent = this.ticket.priority;
     this.priorityEl.className = `cmp-ticketdetail__priority cmp-ticketdetail__priority--${this.ticket.priority.toLowerCase()}`;
     this.assignedtoEl.textContent = this.escapeHtml(this.ticket.assignedTo || 'Unassigned');
+    this.createdbyEl.textContent = this.escapeHtml(this.ticket.createdBy || 'Unknown');
     this.createdEl.textContent = this.formatDate(this.ticket.createdAt);
     this.updatedEl.textContent = this.formatDate(this.ticket.updatedAt);
     this.descriptionEl.textContent = this.escapeHtml(this.ticket.description);
