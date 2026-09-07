@@ -109,8 +109,7 @@ public class CommentServiceImpl implements CommentService {
                         Node commentsNode = jcrContentNode.getNode(COMMENTS_FOLDER);
                         NodeIterator nodeIterator = commentsNode.getNodes();
 
-                        // Collect comments in reverse order (newest first)
-                        List<Map<String, Object>> tempComments = new ArrayList<>();
+                        // Collect comments in chronological order (oldest first)
                         while (nodeIterator.hasNext()) {
                             Node commentNode = nodeIterator.nextNode();
                             Map<String, Object> comment = new HashMap<>();
@@ -119,12 +118,7 @@ public class CommentServiceImpl implements CommentService {
                             comment.put("createdBy", commentNode.getProperty("createdBy").getString());
                             comment.put("createdAt",
                                     ISO8601.format(commentNode.getProperty("createdAt").getDate()));
-                            tempComments.add(comment);
-                        }
-
-                        // Reverse to get newest first
-                        for (int i = tempComments.size() - 1; i >= 0; i--) {
-                            comments.add(tempComments.get(i));
+                            comments.add(comment);
                         }
                     }
                 } catch (javax.jcr.PathNotFoundException e) {
