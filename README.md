@@ -26,6 +26,33 @@ A comprehensive Support Ticket Management System built on AEM as a Cloud Service
 * [dispatcher:](dispatcher/) Cloud-optimized Dispatcher configuration
 * [all:](all/) Content package aggregating all modules for deployment
 
+## AEM SDK Setup
+
+Before building and deploying, obtain and start the AEM SDK Quickstart:
+
+1. **Download the AEM SDK** from [Adobe Managed Services](https://experienceleague.adobe.com/en/docs/experience-manager-cloud-service/content/implementing/developing/aem-as-a-cloud-service-sdk)
+   - Log in with your Adobe credentials
+   - Download the AEM SDK Quickstart JAR for your operating system
+
+2. **Extract and start AEM**
+   ```bash
+   # Extract the SDK
+   unzip aem-sdk-quickstart-*.zip
+   
+   # Navigate to the extracted directory
+   cd aem-sdk-quickstart-*/
+   
+   # Start AEM (author instance on port 4502)
+   java -jar aem-quickstart.jar
+   ```
+   - AEM will start with a demo user `admin` / password `admin`
+   - Wait for the startup message: `[OK] Quickstart finished OK`
+
+3. **Verify AEM is running**
+   - Visit http://localhost:4502 in your browser
+   - Log in with `admin` / `admin`
+   - Verify the author environment loads
+
 ## How to build
 
 To build all the modules run in the project root directory the following command with Maven 3:
@@ -51,6 +78,96 @@ Or to deploy only the bundle to the author, run
 Or to deploy only a single content package, run in the sub-module directory (i.e `ui.apps`)
 
     mvn clean install -PautoInstallPackage
+
+## API Usage Examples
+
+The project provides a RESTful API for ticket management. Below are example curl commands for the main endpoints.
+
+### Create a ticket
+
+```bash
+curl -X POST http://localhost:4502/bin/api/tickets \
+  -H "Content-Type: application/json" \
+  -u admin:admin \
+  -d '{
+    "title": "Fix login issue",
+    "description": "Users unable to log in after update",
+    "priority": "HIGH",
+    "assignedto": "admin"
+  }'
+```
+
+### List all tickets
+
+```bash
+curl -X GET http://localhost:4502/bin/api/tickets \
+  -u admin:admin
+```
+
+### List tickets with search and filter
+
+```bash
+# Search by keyword
+curl -X GET "http://localhost:4502/bin/api/tickets?search=login" \
+  -u admin:admin
+
+# Filter by status
+curl -X GET "http://localhost:4502/bin/api/tickets?status=Open" \
+  -u admin:admin
+
+# Search and filter together
+curl -X GET "http://localhost:4502/bin/api/tickets?search=login&status=Open" \
+  -u admin:admin
+```
+
+### Get a specific ticket
+
+```bash
+curl -X GET "http://localhost:4502/bin/api/tickets?id=ticket-a1b2c3d4" \
+  -u admin:admin
+```
+
+### Update ticket fields
+
+```bash
+curl -X PUT "http://localhost:4502/bin/api/tickets?id=ticket-a1b2c3d4" \
+  -H "Content-Type: application/json" \
+  -u admin:admin \
+  -d '{
+    "title": "Fixed: login issue resolved",
+    "priority": "MEDIUM"
+  }'
+```
+
+### Change ticket status
+
+```bash
+curl -X PUT "http://localhost:4502/bin/api/tickets?id=ticket-a1b2c3d4" \
+  -H "Content-Type: application/json" \
+  -u admin:admin \
+  -d '{
+    "newStatus": "In Progress"
+  }'
+```
+
+### Add a comment to a ticket
+
+```bash
+curl -X POST "http://localhost:4502/bin/api/tickets/comments" \
+  -H "Content-Type: application/json" \
+  -u admin:admin \
+  -d '{
+    "ticketId": "ticket-a1b2c3d4",
+    "comment": "Working on the fix"
+  }'
+```
+
+### Get all comments for a ticket
+
+```bash
+curl -X GET "http://localhost:4502/bin/api/tickets/comments?id=ticket-a1b2c3d4" \
+  -u admin:admin
+```
 
 ## Documentation
 

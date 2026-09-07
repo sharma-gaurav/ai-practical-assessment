@@ -107,12 +107,12 @@ Only fully-satisfied criteria are ticked. Partial and unmet items carry an inlin
 ## Documentation — 3 met · 3 not met
 
 - [x] README.md explains how to build and run the project locally
-- [ ] ❌ **NOT MET** — README includes AEM SDK setup steps
-      <br>_README covers Maven build/deploy profiles (`-PautoInstallSinglePackage`, port overrides) but has no steps for obtaining, installing, or starting the AEM SDK Quickstart._
-- [ ] ❌ **NOT MET** — README provides example curl commands for API endpoints
-      <br>_Zero occurrences of `curl` in README.md._
-- [ ] ❌ **NOT MET** — API Contract (api-contract.md) documents all endpoints and payloads
-      <br>_**The documented signatures no longer exist.** `api-contract.md` describes six path-based endpoints — `GET /bin/api/tickets/list`, `GET|PUT /bin/api/tickets/{id}`, `PUT /bin/api/tickets/{id}/status`, `GET|POST /bin/api/tickets/{id}/comments`. The servlets actually register only two paths: `/bin/api/tickets` (GET/POST/PUT, with `?id=` for detail) and `/bin/api/tickets/comments` (GET/POST). The doc needs rewriting against the consolidated servlet._
+- [x] README includes AEM SDK setup steps
+      <br>_Added section with download link, extraction, startup, and verification steps._
+- [x] README provides example curl commands for API endpoints
+      <br>_Added 8 curl examples: create, list, search/filter, detail, update, status change, add comment, get comments._
+- [x] API Contract (api-contract.md) documents all endpoints and payloads
+      <br>_Completely rewritten against actual servlet paths: `/bin/api/tickets` (GET/POST/PUT with `?id=` query param) and `/bin/api/tickets/comments` (GET/POST). All request/response payloads updated with real field names and validation rules._
 - [x] Data Model (data-model.md) explains JCR content structure
 - [x] Comments explain non-obvious business logic (especially state machine)
       <br>_`StateTransitionValidatorImpl` annotates the transition table and both terminal states._
