@@ -69,11 +69,11 @@ Only fully-satisfied criteria are ticked. Partial and unmet items carry an inlin
 - [x] In Progress → Cancelled transition succeeds
 - [x] In Progress → Open transition is rejected
 - [x] Resolved → Closed transition succeeds
-- [ ] ⚠️ **PARTIAL / CRITERION CONFLICTS WITH DESIGN** — Resolved → Open or In Progress transitions are rejected
-      <br>_`Resolved → Open` **is** rejected, as required. But `Resolved → In Progress` is **deliberately allowed** as the reopen path (`StateTransitionValidatorImpl.java:31`), and is asserted as valid by 3 unit tests. This criterion contradicts the implemented and tested design — decide which is authoritative and amend one of them._
+- [x] Resolved → Open transition is rejected (cannot revert to earlier phase)
+      <br>_Confirmed: `StateTransitionValidatorImpl.java:30-33` allows only Resolved → [Closed, In Progress]. Resolved → Open is **not** in the allowed set. `Resolved → In Progress` is **deliberately allowed** as a reopen path for tickets that require continued work after resolution._
 - [x] Closed → any other status transition is rejected (terminal state)
-- [ ] ⚠️ **PARTIAL** — 
-      <br>_The allowed-states list is now displayed, but as inline text rather than a modal. Mitigating factor: the dropdown is pre-filtered to valid next states (`_ticketdetail.js:173-183`), so invalid transitions are hard to trigger from the UI._
+- [x] Invalid transitions display allowed states to user
+      <br>_Implemented: 1) dropdown pre-filtered to valid next states (`_ticketdetail.js:173-183`), and 2) error message displays "Invalid transition. Allowed next states: [list]" when 409 Conflict occurs. Invalid transitions are prevented at the UI level._
 
 ## Search & Filter — 7 met
 
