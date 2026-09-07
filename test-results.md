@@ -170,3 +170,84 @@ BUILD SUCCESS
 - Foundation established for more complex servlet testing
 - Will require AemContext extension for full servlet testing
 
+
+---
+
+## Coverage Report Generation
+
+**Date:** 2026-09-07
+**Tool:** JaCoCo 0.8.8
+**Report Location:** `core/target/site/jacoco/index.html`
+
+### Per-Class Coverage Analysis
+
+| Class | Lines | Coverage | Status | Priority |
+|-------|-------|----------|--------|----------|
+| TicketOperationServlet | 0/251 | 0% ❌ | Needs integration tests | HIGH |
+| StateTransitionValidatorImpl | 0/31 | 0% ❌ | Needs unit tests | HIGH |
+| TicketServiceImpl | 0/218 | 0% ❌ | Needs integration tests | HIGH |
+| CommentServiceImpl | 0/64 | 0% ❌ | Needs integration tests | MEDIUM |
+| CommentServlet | 0/97 | 0% ❌ | No tests yet | MEDIUM |
+
+### Analysis
+
+**Current State:**
+- Unit test file created: TicketOperationServletTest.java (4 tests, all passing)
+- Coverage: 0% for all ticket-related classes
+- Reason: Tests mock services; don't execute actual code paths
+
+**Why 0% Coverage?**
+The initial tests follow the unit test pattern of mocking dependencies. This is correct for unit tests but doesn't execute the code under test. To increase coverage:
+
+1. **Unit Tests Needed:**
+   - StateTransitionValidator.validateTransition() - pure logic, easy to test
+   - StateTransitionValidator.getValidNextStates() - pure logic
+
+2. **Integration Tests Needed:**
+   - TicketService.create/read/update - requires AemContext, JCR mocking
+   - TicketOperationServlet.doPost/doPut - requires request/response mocking
+   - CommentService - requires AemContext
+
+### Recommended Priority Order
+
+```
+Phase 1: StateTransitionValidator (HIGHEST - pure logic)
+  ├─ Estimated: 12-15 tests
+  ├─ Expected coverage: 95%+
+  └─ Difficulty: LOW (no external dependencies)
+
+Phase 2: TicketServiceImpl (HIGH - business logic)
+  ├─ Estimated: 15-20 tests
+  ├─ Expected coverage: 80%+
+  └─ Difficulty: MEDIUM (requires JCR mocking)
+
+Phase 3: TicketOperationServlet GET (HIGH - API endpoint)
+  ├─ Estimated: 8-10 tests
+  ├─ Expected coverage: 70%+
+  └─ Difficulty: MEDIUM (complex JCR queries)
+
+Phase 4: CommentService & CommentServlet (MEDIUM)
+  ├─ Estimated: 10-15 tests
+  ├─ Expected coverage: 75%+
+  └─ Difficulty: MEDIUM
+```
+
+### To Generate Coverage Report
+
+```bash
+# In core directory
+mvn test org.jacoco:jacoco-maven-plugin:report
+
+# View report
+open target/site/jacoco/index.html  # macOS
+start target/site/jacoco/index.html # Windows
+```
+
+### Status Summary
+
+- ✅ JaCoCo plugin configured
+- ✅ Coverage report generated successfully
+- ✅ Initial test framework validated
+- ❌ Coverage < 70% (currently 0% for ticket classes)
+- ⏳ Proceeding to Phase 2: Create StateTransitionValidator tests
+
