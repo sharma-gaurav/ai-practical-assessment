@@ -109,6 +109,34 @@
     return error.message || 'Failed to load ticket';
   };
 
+  TicketDetail.prototype.fetchWithRetry = function(url, options, maxRetries = 3) {
+    let attempt = 0;
+    const attemptFetch = () => {
+      attempt++;
+      return fetch(url, options).then(response => {
+        if (response.status === 409) {
+          if (attempt < maxRetries) {
+            const delay = Math.pow(2, attempt - 1) * 100;
+            return new Promise(resolve => {
+              setTimeout(() => resolve(attemptFetch()), delay);
+            });
+          }
+        }
+        return response;
+      }).catch(error => {
+        if (attempt < maxRetries && this.isNetworkError(error)) {
+          const delay = Math.pow(2, attempt - 1) * 100;
+          return new Promise(resolve => {
+            setTimeout(() => resolve(attemptFetch()), delay);
+          });
+        }
+        throw error;
+      });
+    };
+
+    return attemptFetch();
+  };
+
   TicketDetail.prototype.loadTicket = function() {
     this.showLoading();
 
@@ -275,7 +303,7 @@
     this.saveBtn.disabled = true;
     this.saveBtn.textContent = 'Saving...';
 
-    fetch(`/bin/api/tickets?id=${this.ticketId}`, {
+    this.fetchWithRetry(`/bin/api/tickets?id=${this.ticketId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
@@ -324,7 +352,7 @@
     this.statusChangeBtn.disabled = true;
     this.statusChangeBtn.textContent = 'Changing...';
 
-    fetch('/bin/api/tickets?id=' + this.ticketId, {
+    this.fetchWithRetry('/bin/api/tickets?id=' + this.ticketId, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'

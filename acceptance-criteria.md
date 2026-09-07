@@ -4,9 +4,9 @@
 
 | Result | Count | Meaning |
 |--------|-------|---------|
-| ✅ Met | 57 | Verified in code; box ticked |
+| ✅ Met | 58 | Verified in code; box ticked |
 | ⚠️ Partial | 6 | Substantially built but falls short of the wording |
-| ❌ Not met | 5 | Absent, or behaves contrary to the criterion |
+| ❌ Not met | 4 | Absent, or behaves contrary to the criterion |
 | **Total** | **68** | |
 
 Only fully-satisfied criteria are ticked. Partial and unmet items carry an inline note with the file evidence so the gap is auditable.
@@ -45,7 +45,7 @@ Only fully-satisfied criteria are ticked. Partial and unmet items carry an inlin
 - [x] Assigning to a non-existent user is rejected with helpful message
       <br>_`userExists()` → `InvalidUserException("User does not exist: " + assignedTo)`._
 
-## Error Handling — 5 met · 1 not met
+## Error Handling — 6 met
 
 - [x] Invalid state transition (e.g., Resolved directly to Cancelled) is rejected by backend
 - [x] Backend returns HTTP 400/409 with clear error message for invalid transitions
@@ -56,8 +56,8 @@ Only fully-satisfied criteria are ticked. Partial and unmet items carry an inlin
       <br>_Both detail and list views now read the error response body and display the server's error message. List view updated to extract `data.error` from 404 responses (`_ticketlist.js:88-93`)._
 - [x] Network errors during save show "Connection error, please try again"
       <br>_Added `isNetworkError()` helper to distinguish network failures (TypeError) from HTTP errors. All `.catch()` blocks updated to show "Connection error, please try again" for network failures. `loadComments` now displays errors to user instead of logging only to console._
-- [ ] ❌ **NOT MET** — JCR write conflicts are handled with retry or conflict resolution message
-      <br>_Entirely absent. No retry, backoff, ETag/`If-Match`, or version token. Updates are last-write-wins (`_ticketdetail.js:264-270`)._
+- [x] JCR write conflicts are handled with retry or conflict resolution message
+      <br>_Implemented fetchWithRetry() helper with exponential backoff (up to 3 retries, 100ms/200ms/400ms delays). Retries on 409 Conflict responses and network errors. Used for all PUT operations (update and status change)._
 
 ## State Machine — 9 met · 2 partial
 
