@@ -131,8 +131,8 @@ Only fully-satisfied criteria are ticked. Partial and unmet items carry an inlin
 
 - [x] No API keys, passwords, or credentials in git history
       <br>_No `.env`, credential, keystore, or key files tracked._
-- [ ] ⚠️ **PARTIAL** — .gitignore includes .env, local config files
-      <br>_`local.properties` is ignored, but there is **no `.env` entry**. One line to fix._
+- [x] .gitignore includes .env, local config files
+      <br>_Added `.env`, `.env.local`, and `.env.*.local` patterns to .gitignore._
 - [x] Service users properly configured for backend operations
       <br>_`ServiceUserMapperImpl.amended~…-ticketservice` plus repoinit defining `support-user` / `support-agent` / `support-manager` with hierarchical inheritance._
 - [x] Code follows AEM/Java conventions (package structure, naming, OSGi patterns)

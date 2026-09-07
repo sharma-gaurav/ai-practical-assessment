@@ -116,3 +116,8 @@ dispatcher/src/conf.d/variables/default.vars
 
 # Git Configuration
 .gitattributes
+
+# Environment variables
+.env
+.env.local
+.env.*.local
