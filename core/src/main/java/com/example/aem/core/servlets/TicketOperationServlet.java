@@ -25,6 +25,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.example.aem.core.exceptions.InvalidUserException;
 import com.example.aem.core.services.StateTransitionValidator;
 import com.example.aem.core.services.SystemResourceResolverService;
 import com.example.aem.core.services.TicketService;
@@ -119,7 +120,9 @@ public class TicketOperationServlet implements Servlet {
                 Map<String, Object> ticket = ticketService.create(title.trim(), description.trim(), priority, assignedTo);
                 response.setStatus(SlingHttpServletResponse.SC_CREATED);
                 writeSuccessResponse(response, ticket);
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException | InvalidUserException e) {
+                // An unknown assignee is a client error, not a server fault: report it as 400
+                // with the originating message so the user learns which user was rejected.
                 logger.warn("Validation error: {}", e.getMessage());
                 response.setStatus(SlingHttpServletResponse.SC_BAD_REQUEST);
                 writeErrorResponse(response, e.getMessage(), null);

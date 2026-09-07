@@ -157,8 +157,8 @@ curl -X POST "http://localhost:4502/bin/api/tickets/comments" \
   -H "Content-Type: application/json" \
   -u admin:admin \
   -d '{
-    "ticketId": "ticket-a1b2c3d4",
-    "comment": "Working on the fix"
+    "id": "ticket-a1b2c3d4",
+    "message": "Working on the fix"
   }'
 ```
 

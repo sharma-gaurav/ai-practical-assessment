@@ -105,6 +105,16 @@ Import-Package: javax.annotation;version=0.0.0,*
             <artifactId>slf4j-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- Declared ahead of aem-sdk-api deliberately. At runtime AEM provides Gson, but the
+             uber jar also bundles an older copy; without this ordering the test classpath mixes
+             the two versions and Gson fails to initialise with a NoSuchFieldError. Test scope
+             only, so the shipped bundle is unaffected. -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>com.adobe.aem</groupId>
             <artifactId>aem-sdk-api</artifactId>

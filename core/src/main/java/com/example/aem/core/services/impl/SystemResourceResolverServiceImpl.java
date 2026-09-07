@@ -37,6 +37,12 @@ public class SystemResourceResolverServiceImpl implements SystemResourceResolver
         try {
             resolver = getSystemResourceResolver(serviceUser);
             return operation.execute(resolver);
+        } catch (RuntimeException e) {
+            // Propagate unchecked exceptions unchanged: callers discriminate on their type,
+            // e.g. an IllegalStateException from the state machine must reach the servlet
+            // intact so it can be answered with 409 rather than 500.
+            logger.error("Error executing operation with system resolver for service user: {}", serviceUser, e);
+            throw e;
         } catch (Exception e) {
             logger.error("Error executing operation with system resolver for service user: {}", serviceUser, e);
             throw new RuntimeException("Operation failed: " + e.getMessage(), e);

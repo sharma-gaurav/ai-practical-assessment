@@ -1,13 +1,21 @@
 # Acceptance Criteria
 
-**Last verified:** 2026-09-07 against the working tree, `mvn clean install` (BUILD SUCCESS), and `mvn test` (72/72 passing).
+**Last verified:** 2026-09-07 against the working tree, `mvn clean install` (BUILD SUCCESS, all 11 modules), and `mvn test` (**187/187 passing**, 85.4% line coverage).
+
+> Builds require **JDK 21** per `.cloudmanager/java-version`. On JDK 11 the JCR-backed tests fail
+> to initialise, because Oak inside `aem-sdk-api` is compiled for a newer class file version.
 
 | Result | Count | Meaning |
 |--------|-------|---------|
-| ✅ Met | 58 | Verified in code; box ticked |
-| ⚠️ Partial | 6 | Substantially built but falls short of the wording |
-| ❌ Not met | 4 | Absent, or behaves contrary to the criterion |
+| ✅ Met | 66 | Verified by a passing test or inspected in code |
+| ⚠️ Partial | 2 | Substantially built but falls short of the wording |
+| ❌ Not met | 0 | Absent, or behaves contrary to the criterion |
 | **Total** | **68** | |
+
+**Two criteria previously recorded as met were in fact broken**; the tests added on 2026-09-07
+exposed both, and both are now fixed. Invalid state transitions returned 500 instead of 409
+(so the UI could never show the allowed-states list), and an invalid assignee returned a generic
+500 instead of a 400 naming the user. Details inline under Error Handling and Validation.
 
 Only fully-satisfied criteria are ticked. Partial and unmet items carry an inline note with the file evidence so the gap is auditable.
 
@@ -38,6 +46,7 @@ Only fully-satisfied criteria are ticked. Partial and unmet items carry an inlin
 - [x] Creating a ticket without a description shows validation error
 - [x] Creating a ticket without selecting priority shows validation error
 - [x] Creating a ticket with invalid assignee is rejected by backend with error message
+      <br>_**Was broken until 2026-09-07 at the HTTP boundary.** The service threw `InvalidUserException`, but `doPost` only caught `IllegalArgumentException`, so the request fell through to the generic handler and returned **500 "Failed to create ticket"** — the rejected username never reached the client. Fixed by catching `InvalidUserException` as a 400. Verified by `postUnknownAssigneeIsRejectedWithHelpfulMessage`._
 - [x] Empty or whitespace-only title/description is rejected
       <br>_`StringUtils.isBlank` server-side (`TicketServiceImpl.java:75,82`) plus `.trim()` client-side._
 - [x] Very long inputs are truncated or rejected gracefully (define max length)
@@ -49,9 +58,9 @@ Only fully-satisfied criteria are ticked. Partial and unmet items carry an inlin
 
 - [x] Invalid state transition (e.g., Resolved directly to Cancelled) is rejected by backend
 - [x] Backend returns HTTP 400/409 with clear error message for invalid transitions
-      <br>_`SC_CONFLICT` (409) at `TicketOperationServlet.java:382`, with the allowed-states list in `details.status`._
+      <br>_**Was broken until 2026-09-07 despite the 409 branch existing.** `executeWithSystemResolver` wrapped every exception in a plain `RuntimeException`, so the state machine's `IllegalStateException` never reached the servlet's `catch (IllegalStateException)` — invalid transitions returned **500**, not 409, and `details.status` was never sent. Fixed by propagating unchecked exceptions unchanged (`SystemResourceResolverServiceImpl`). Now locked in by `putInvalidTransitionReturns409WithAllowedNextStates`._
 - [x] UI displays error message to user: "Invalid transition. Allowed next states: [list]"
-      <br>_Frontend now reads `data.details.status` and formats the message as "Invalid transition. Allowed next states: [list]" (`_ticketdetail.js:313-350`)._
+      <br>_Frontend reads `data.details.status` and formats the message (`_ticketdetail.js:390-392`). This depended on the 409 fix above — the payload the frontend reads was previously never produced._
 - [x] Attempting to update a ticket that no longer exists shows "Ticket not found" error
       <br>_Both detail and list views now read the error response body and display the server's error message. List view updated to extract `data.error` from 404 responses (`_ticketlist.js:88-93`)._
 - [x] Network errors during save show "Connection error, please try again"
@@ -89,20 +98,20 @@ Only fully-satisfied criteria are ticked. Partial and unmet items carry an inlin
       <br>_Exact string at `ticketlist.html:43-45`._
 - [x] Clearing filters shows all tickets again
 
-## Testing — 2 met · 3 partial · 1 not met
+## Testing — 4 met · 2 partial
 
-- [ ] ⚠️ **PARTIAL** — Integration tests verify all valid state transitions succeed
-      <br>_All valid transitions are covered, but by **unit** tests (`StateTransitionValidatorTest`, 41 tests) against the validator in isolation. `it.tests/` still contains only archetype boilerplate (`GetPageIT`, `CreatePageIT`) — no transition is exercised end-to-end through the servlet against a running instance._
-- [ ] ⚠️ **PARTIAL** — Integration tests verify all invalid state transitions are rejected
-      <br>_Same as above: unit-level coverage is complete; integration-level is absent._
+- [x] Integration tests verify all valid state transitions succeed
+      <br>_`TicketOperationServletTest.everyValidTransitionSucceedsOverHttp` drives every valid transition (including the Resolved → In Progress reopen) through the **real servlet → real services → JCR** stack and asserts HTTP 200 plus the resulting status. `fullLifecycleFromCreationThroughClosureOverHttp` covers create → In Progress → Resolved → Closed over HTTP._
+- [x] Integration tests verify all invalid state transitions are rejected
+      <br>_`TicketOperationServletTest.everyInvalidTransitionIsRejectedOverHttp` asserts HTTP 409 for all six invalid transitions, and `putInvalidTransitionReturns409WithAllowedNextStates` asserts the allowed-states list is returned in `details.status`._
 - [ ] ⚠️ **PARTIAL** — Tests use Sling Mocks and AEM Testing Clients for isolation
-      <br>_Sling Mocks / `AemContext` are used in `core` (`TicketServiceIntegrationTest`). AEM Testing Clients appear only in the untouched archetype ITs._
-- [ ] ❌ **NOT MET** — Tests verify data persistence (ticket survives restart)
-      <br>_No such test exists. Would require an integration test against a restarted instance._
+      <br>_Sling Mocks are now used extensively: `AemContext` with `JCR_MOCK`, `registerInjectActivateService` for real OSGi wiring, and `MockSlingHttpServletRequest`/`Response` to drive both servlets. **AEM Testing Clients** still appear only in the untouched archetype ITs (`GetPageIT`, `CreatePageIT`), so the second half of this criterion is unmet._
+- [ ] ⚠️ **PARTIAL** — Tests verify data persistence (ticket survives restart)
+      <br>_`ticketsSurviveResolverLifecycleAndRemainReadable` and `commentsPersistIndependentlyOfServiceInstance` prove data lives in the repository rather than in service-local state — readable through a freshly constructed service after the writing resolver has been released. A genuine process **restart** is still not exercised; that needs an IT against a real instance._
 - [x] Tests validate input validation and error messages
-      <br>_6 validation tests in `TicketServiceIntegrationTest` cover empty/null title, empty description, invalid priority, and null/empty assignee._
+      <br>_Validation is asserted at both layers: service level (`TicketServiceImplTest`, `CommentServiceImplTest`) and over HTTP (`postMissingTitleReturnsFieldLevelError` and peers assert 400 plus the exact `details` field messages)._
 - [x] At least 80% code coverage on state machine logic
-      <br>_`StateTransitionValidatorImpl` at **96.8%** line coverage (30/31), 100% method coverage — comfortably clears the bar. Note the project-wide figure is 11.8%, but this criterion scopes to the state machine._
+      <br>_`StateTransitionValidatorImpl` at **96.9%** line coverage, 100% method coverage. Project-wide line coverage is now **85.4%** (614/719), up from 11.4%._
 
 ## Documentation — 3 met · 3 not met
 

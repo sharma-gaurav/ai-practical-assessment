@@ -346,20 +346,19 @@ GET /bin/api/tickets/comments?id=ticket-a1b2c3d4
 
 **Endpoint:** `POST /bin/api/tickets/comments`
 
-**Query Parameters:**
-- `id`: Ticket ID (required)
+The ticket ID is supplied in the request body (not as a query parameter).
 
 **Request:**
 ```json
 {
-  "ticketId": "ticket-a1b2c3d4",
-  "comment": "Working on this issue"
+  "id": "ticket-a1b2c3d4",
+  "message": "Working on this issue"
 }
 ```
 
 **Validation Rules:**
-- `ticketId`: Required, must be a valid ticket ID
-- `comment`: Required, string, 1-2000 characters, non-empty after trim
+- `id`: Required, must be a valid ticket ID
+- `message`: Required, non-empty after trim
 
 **Response (201 Created):**
 ```json

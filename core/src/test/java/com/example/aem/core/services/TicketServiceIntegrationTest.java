@@ -165,19 +165,15 @@ class TicketServiceIntegrationTest {
     // ===================== COMMENT SERVICE Tests =====================
 
     @Test
-    void testCommentService_AddComment_ValidData() {
-        // Validates comment creation with initialized service
-        // Note: CommentService requires proper @Reference injection
-        // This test pattern works once service is wired to AemContext
-
-        // Create test if CommentServiceImpl supports initialization
-        // Currently skipped as implementation detail
+    void testCommentService_AddComment_RejectsBlankTicketId() {
+        assertThrows(IllegalArgumentException.class,
+            () -> commentService.addComment("", "A message", "admin"));
     }
 
     @Test
-    void testCommentService_AddComment_EmptyMessage() {
-        // Validates that empty comment message is rejected
-        // Skipped pending CommentServiceImpl interface verification
+    void testCommentService_AddComment_RejectsEmptyMessage() {
+        assertThrows(IllegalArgumentException.class,
+            () -> commentService.addComment("ticket-001", "   ", "admin"));
     }
 
     // ===================== INTEGRATION PATTERN Tests =====================
