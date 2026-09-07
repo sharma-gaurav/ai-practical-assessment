@@ -1,172 +1,107 @@
-# Test Results
+# Unit Test Results & Coverage Report
 
-## Overview
+## Executive Summary
 
-Summary of all test execution results for the Support Ticket Management System.
-
----
-
-## Unit Tests
-
-**Status:** [PENDING]
-
-### State Machine Tests
-- [ ] All valid transitions pass
-- [ ] All invalid transitions fail
-- [ ] Valid next states calculated correctly
-
-**Coverage:** [Pending]
-
-**Command:**
-```bash
-mvn test -Dtest=StateTransitionValidator*
-```
-
-**Results:**
-```
-[To be filled after execution]
-```
+| Metric | Target | Current | Status |
+|--------|--------|---------|--------|
+| Overall Line Coverage | ≥70% | — | ⏳ Not Started |
+| Overall Branch Coverage | ≥65% | — | ⏳ Not Started |
+| All Tests Passing | 100% | — | ⏳ Not Started |
+| Test Count | 50+ | 0 | ⏳ Not Started |
 
 ---
 
-## Integration Tests
+## Component-by-Component Results
 
-**Status:** [PENDING]
+### 1. StateTransitionValidator / StateTransitionValidatorImpl
 
-### CRUD Operations
-- [ ] Create ticket with valid data
-- [ ] Read ticket by ID
-- [ ] Update ticket fields
-- [ ] Delete ticket
-- [ ] List all tickets
+**Status:** ⏳ NOT STARTED
 
-**Coverage:** [Pending]
+| Aspect | Details |
+|--------|---------|
+| Test Class | StateTransitionValidatorTest |
+| Priority | HIGH (critical business logic) |
+| Estimated Tests | 12-15 |
 
-**Command:**
-```bash
-mvn verify -Dtest=*Integration*
-```
-
-**Results:**
-```
-[To be filled after execution]
-```
-
----
-
-## API Endpoint Tests
-
-**Status:** [PENDING]
-
-### Endpoints Tested
-- [ ] GET /bin/api/tickets
-- [ ] POST /bin/api/tickets
-- [ ] GET /bin/api/tickets/{id}
-- [ ] PUT /bin/api/tickets/{id}
-- [ ] PUT /bin/api/tickets/{id}/status
-- [ ] GET /bin/api/tickets/{id}/comments
-- [ ] POST /bin/api/tickets/{id}/comments
-
-**Results Summary:**
-| Endpoint | Method | Status | Notes |
-|----------|--------|--------|-------|
-| /bin/api/tickets | GET | [Pending] | |
-| /bin/api/tickets | POST | [Pending] | |
-| /bin/api/tickets/{id} | GET | [Pending] | |
-| /bin/api/tickets/{id} | PUT | [Pending] | |
-| /bin/api/tickets/{id}/status | PUT | [Pending] | |
-| /bin/api/tickets/{id}/comments | GET | [Pending] | |
-| /bin/api/tickets/{id}/comments | POST | [Pending] | |
+**Test Cases to Implement:**
+- [ ] testOpenToInProgress() → Valid
+- [ ] testOpenToCancelled() → Valid
+- [ ] testOpenToResolved() → Invalid
+- [ ] testOpenToClosed() → Invalid
+- [ ] testInProgressToResolved() → Valid
+- [ ] testInProgressToCancelled() → Valid
+- [ ] testResolvedToClosed() → Valid
+- [ ] testClosedToAny() → All Invalid
+- [ ] testCancelledToAny() → All Invalid
 
 ---
 
-## End-to-End Tests (Cypress)
+### 2. TicketOperationServlet
 
-**Status:** [PENDING]
+**Status:** ⏳ NOT STARTED
 
-### Test Suites
-- [ ] Create Ticket Flow
-- [ ] Search and Filter
-- [ ] State Machine Transitions
-- [ ] Add Comments
+| Aspect | Details |
+|--------|---------|
+| Test Class | TicketOperationServletTest |
+| Priority | HIGH (main API endpoint) |
+| Estimated Tests | 15-18 |
 
-**Command:**
-```bash
-npx cypress run
+**Test Cases to Implement:**
+- [ ] testDoGetListTickets() → 200 OK
+- [ ] testDoGetTicketDetail() → 200 OK
+- [ ] testDoGetTicketNotFound() → 404 Not Found
+- [ ] testDoPostCreateTicket() → 201 Created
+- [ ] testDoPostValidation() → 400 Bad Request
+- [ ] testDoPutUpdateFields() → 200 OK
+- [ ] testDoPutStatusChangeValid() → 200 OK
+- [ ] testDoPutStatusChangeInvalid() → 409 Conflict
+
+---
+
+### 3. CommentService / CommentServiceImpl
+
+**Status:** ⏳ NOT STARTED
+
+| Priority | MEDIUM |
+| Estimated Tests | 8-10 |
+
+---
+
+### 4. TicketService / TicketServiceImpl
+
+**Status:** ⏳ NOT STARTED
+
+| Priority | HIGH |
+| Estimated Tests | 12-15 |
+
+---
+
+## Cumulative Coverage Progress
+
 ```
-
-**Results:**
-```
-[To be filled after execution]
+TOTAL TEST CASES PLANNED: 50+
+CURRENT OVERALL COVERAGE: —% (Target: 70%+)
+STATUS: ⏳ NOT STARTED
 ```
 
 ---
 
-## Data Persistence Test
+## Checklist: Test Implementation Progress
 
-**Status:** [PENDING]
-
-**Test:** Verify data survives AEM restart
-
-**Procedure:**
-1. Create ticket
-2. Restart AEM
-3. Verify ticket still exists
-
-**Result:** [Pending]
+- [ ] Phase 1: StateTransitionValidator tests created & passing
+- [ ] Phase 2: TicketOperationServlet tests created & passing
+- [ ] Phase 3: CommentService tests created & passing
+- [ ] Phase 4: TicketService tests created & passing
+- [ ] Phase 5: CommentServlet tests created & passing
+- [ ] Coverage report generated (≥70%)
+- [ ] test-strategy.md updated with results
 
 ---
 
-## Test Coverage Report
+## Document Information
 
-**Target:** ≥ 80% overall, 100% for state machine
-
-**Current Coverage:**
-```
-[To be filled after jacoco:report]
-```
-
-**Command:**
-```bash
-mvn clean verify jacoco:report
-open target/site/jacoco/index.html
-```
-
----
-
-## Failures & Issues Found
-
-### Issue 1: [To be documented]
-- **Description:** [Pending]
-- **Root Cause:** [Pending]
-- **Fix:** [Pending]
-- **Status:** [Pending]
-
----
-
-## Regression Testing
-
-**Last Full Run:** [Date]
-
-**Breaking Changes:** None
-
----
-
-## Performance Test Notes
-
-[Not applicable in Core; defer to Stretch]
-
----
-
-## Approval
-
-- [ ] All critical tests pass
-- [ ] State machine thoroughly validated
-- [ ] No blockers for deployment
-- [ ] Coverage goals met
-
-**Tested By:** [To be filled]
-
-**Date:** [To be filled]
-
-**Sign-off:** [To be filled]
+| Item | Value |
+|------|-------|
+| Version | 1.0 |
+| Created | 2026-09-07 |
+| Status | 📝 In Progress |
