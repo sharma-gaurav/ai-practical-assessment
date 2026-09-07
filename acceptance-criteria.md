@@ -4,8 +4,8 @@
 
 | Result | Count | Meaning |
 |--------|-------|---------|
-| ✅ Met | 55 | Verified in code; box ticked |
-| ⚠️ Partial | 7 | Substantially built but falls short of the wording |
+| ✅ Met | 56 | Verified in code; box ticked |
+| ⚠️ Partial | 6 | Substantially built but falls short of the wording |
 | ❌ Not met | 6 | Absent, or behaves contrary to the criterion |
 | **Total** | **68** | |
 
@@ -45,15 +45,15 @@ Only fully-satisfied criteria are ticked. Partial and unmet items carry an inlin
 - [x] Assigning to a non-existent user is rejected with helpful message
       <br>_`userExists()` → `InvalidUserException("User does not exist: " + assignedTo)`._
 
-## Error Handling — 3 met · 1 partial · 2 not met
+## Error Handling — 4 met · 2 not met
 
 - [x] Invalid state transition (e.g., Resolved directly to Cancelled) is rejected by backend
 - [x] Backend returns HTTP 400/409 with clear error message for invalid transitions
       <br>_`SC_CONFLICT` (409) at `TicketOperationServlet.java:382`, with the allowed-states list in `details.status`._
 - [x] UI displays error message to user: "Invalid transition. Allowed next states: [list]"
       <br>_Frontend now reads `data.details.status` and formats the message as "Invalid transition. Allowed next states: [list]" (`_ticketdetail.js:313-350`)._
-- [ ] ⚠️ **PARTIAL** — Attempting to update a ticket that no longer exists shows "Ticket not found" error
-      <br>_The detail view passes the server's "Ticket not found" through its generic handler. The **list view discards the response body** and shows `HTTP error! status: 404` instead (`_ticketlist.js:88-90`)._
+- [x] Attempting to update a ticket that no longer exists shows "Ticket not found" error
+      <br>_Both detail and list views now read the error response body and display the server's error message. List view updated to extract `data.error` from 404 responses (`_ticketlist.js:88-93`)._
 - [ ] ❌ **NOT MET** — Network errors during save show "Connection error, please try again"
       <br>_No such string exists in the frontend. `.catch()` blocks exist but do not distinguish a network failure from an HTTP error; on a genuine `fetch` rejection the raw `TypeError` ("Failed to fetch") is surfaced because `error.message` takes precedence over the fallback. `loadComments` (`_ticketdetail.js:414-416`) logs to console with **no user-visible message at all**._
 - [ ] ❌ **NOT MET** — JCR write conflicts are handled with retry or conflict resolution message

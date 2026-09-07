@@ -86,7 +86,11 @@ window.TicketList = (function() {
         fetch(`${API_ENDPOINT}?${params.toString()}`)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json().then(data => {
+                        throw new Error(data.error || `HTTP error! status: ${response.status}`);
+                    }).catch(err => {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    });
                 }
                 return response.json();
             })
