@@ -98,6 +98,17 @@
     this.commentForm.addEventListener('submit', (e) => this.onCommentSubmit(e));
   };
 
+  TicketDetail.prototype.isNetworkError = function(error) {
+    return error instanceof TypeError && (error.message.includes('Failed to fetch') || error.message.includes('Network'));
+  };
+
+  TicketDetail.prototype.getErrorMessage = function(error) {
+    if (this.isNetworkError(error)) {
+      return 'Connection error, please try again';
+    }
+    return error.message || 'Failed to load ticket';
+  };
+
   TicketDetail.prototype.loadTicket = function() {
     this.showLoading();
 
@@ -123,7 +134,7 @@
       })
       .catch(error => {
         console.error('Error loading ticket:', error);
-        this.showError(error.message || 'Failed to load ticket');
+        this.showError(this.getErrorMessage(error));
       });
   };
 
@@ -291,7 +302,10 @@
       })
       .catch(error => {
         console.error('Error updating ticket:', error);
-        this.displayFormErrors({ general: error.message || 'Failed to update ticket' });
+        const message = this.isNetworkError(error) ?
+          'Connection error, please try again' :
+          (error.message || 'Failed to update ticket');
+        this.displayFormErrors({ general: message });
       })
       .finally(() => {
         this.saveBtn.disabled = false;
@@ -342,7 +356,9 @@
       })
       .catch(error => {
         console.error('Error changing status:', error);
-        let message = error.message || 'Failed to change status';
+        let message = this.isNetworkError(error) ?
+          'Connection error, please try again' :
+          (error.message || 'Failed to change status');
         // If this is an invalid transition, include the allowed next states
         if (error.details && error.details.status) {
           message = `Invalid transition. Allowed next states: ${error.details.status}`;
@@ -399,7 +415,10 @@
       })
       .catch(error => {
         console.error('Error adding comment:', error);
-        this.showError(error.message || 'Failed to add comment');
+        const message = this.isNetworkError(error) ?
+          'Connection error, please try again' :
+          (error.message || 'Failed to add comment');
+        this.showError(message);
       })
       .finally(() => {
         this.addCommentBtn.disabled = false;
@@ -423,6 +442,10 @@
       })
       .catch(error => {
         console.error('Error loading comments:', error);
+        const message = this.isNetworkError(error) ?
+          'Connection error, please try again' :
+          'Failed to load comments';
+        this.showError(message);
       });
   };
 

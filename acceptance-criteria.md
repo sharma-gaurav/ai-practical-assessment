@@ -4,9 +4,9 @@
 
 | Result | Count | Meaning |
 |--------|-------|---------|
-| ✅ Met | 56 | Verified in code; box ticked |
+| ✅ Met | 57 | Verified in code; box ticked |
 | ⚠️ Partial | 6 | Substantially built but falls short of the wording |
-| ❌ Not met | 6 | Absent, or behaves contrary to the criterion |
+| ❌ Not met | 5 | Absent, or behaves contrary to the criterion |
 | **Total** | **68** | |
 
 Only fully-satisfied criteria are ticked. Partial and unmet items carry an inline note with the file evidence so the gap is auditable.
@@ -45,7 +45,7 @@ Only fully-satisfied criteria are ticked. Partial and unmet items carry an inlin
 - [x] Assigning to a non-existent user is rejected with helpful message
       <br>_`userExists()` → `InvalidUserException("User does not exist: " + assignedTo)`._
 
-## Error Handling — 4 met · 2 not met
+## Error Handling — 5 met · 1 not met
 
 - [x] Invalid state transition (e.g., Resolved directly to Cancelled) is rejected by backend
 - [x] Backend returns HTTP 400/409 with clear error message for invalid transitions
@@ -54,8 +54,8 @@ Only fully-satisfied criteria are ticked. Partial and unmet items carry an inlin
       <br>_Frontend now reads `data.details.status` and formats the message as "Invalid transition. Allowed next states: [list]" (`_ticketdetail.js:313-350`)._
 - [x] Attempting to update a ticket that no longer exists shows "Ticket not found" error
       <br>_Both detail and list views now read the error response body and display the server's error message. List view updated to extract `data.error` from 404 responses (`_ticketlist.js:88-93`)._
-- [ ] ❌ **NOT MET** — Network errors during save show "Connection error, please try again"
-      <br>_No such string exists in the frontend. `.catch()` blocks exist but do not distinguish a network failure from an HTTP error; on a genuine `fetch` rejection the raw `TypeError` ("Failed to fetch") is surfaced because `error.message` takes precedence over the fallback. `loadComments` (`_ticketdetail.js:414-416`) logs to console with **no user-visible message at all**._
+- [x] Network errors during save show "Connection error, please try again"
+      <br>_Added `isNetworkError()` helper to distinguish network failures (TypeError) from HTTP errors. All `.catch()` blocks updated to show "Connection error, please try again" for network failures. `loadComments` now displays errors to user instead of logging only to console._
 - [ ] ❌ **NOT MET** — JCR write conflicts are handled with retry or conflict resolution message
       <br>_Entirely absent. No retry, backoff, ETag/`If-Match`, or version token. Updates are last-write-wins (`_ticketdetail.js:264-270`)._
 
@@ -72,7 +72,7 @@ Only fully-satisfied criteria are ticked. Partial and unmet items carry an inlin
 - [ ] ⚠️ **PARTIAL / CRITERION CONFLICTS WITH DESIGN** — Resolved → Open or In Progress transitions are rejected
       <br>_`Resolved → Open` **is** rejected, as required. But `Resolved → In Progress` is **deliberately allowed** as the reopen path (`StateTransitionValidatorImpl.java:31`), and is asserted as valid by 3 unit tests. This criterion contradicts the implemented and tested design — decide which is authoritative and amend one of them._
 - [x] Closed → any other status transition is rejected (terminal state)
-- [ ] ⚠️ **PARTIAL** — Invalid transition shows error modal with allowed next states
+- [ ] ⚠️ **PARTIAL** — 
       <br>_The allowed-states list is now displayed, but as inline text rather than a modal. Mitigating factor: the dropdown is pre-filtered to valid next states (`_ticketdetail.js:173-183`), so invalid transitions are hard to trigger from the UI._
 
 ## Search & Filter — 7 met

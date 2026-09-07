@@ -10,7 +10,7 @@ Repository structure and artifact status for the AI Capability Exercise submissi
 | Features FR1–FR13 | ✅ Complete — builds and deploys |
 | Unit tests | ✅ 72/72 passing · ❌ 11.8% coverage (target 70%) |
 | Integration / E2E tests | ❌ Not started |
-| Acceptance criteria sign-off | ⚠️ 56 of 68 met · 6 partial · 6 not met |
+| Acceptance criteria sign-off | ⚠️ 57 of 68 met · 6 partial · 5 not met |
 | Part C progress artifacts | ⚠️ 3 of 7 filled |
 | Git hygiene | ✅ Clean, pushed, no secrets |
 
