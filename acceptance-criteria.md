@@ -4,9 +4,9 @@
 
 | Result | Count | Meaning |
 |--------|-------|---------|
-| ✅ Met | 50 | Verified in code; box ticked |
-| ⚠️ Partial | 7 | Substantially built but falls short of the wording |
-| ❌ Not met | 11 | Absent, or behaves contrary to the criterion |
+| ✅ Met | 51 | Verified in code; box ticked |
+| ⚠️ Partial | 8 | Substantially built but falls short of the wording |
+| ❌ Not met | 9 | Absent, or behaves contrary to the criterion |
 | **Total** | **68** | |
 
 Only fully-satisfied criteria are ticked. Partial and unmet items carry an inline note with the file evidence so the gap is auditable.
@@ -45,13 +45,13 @@ Only fully-satisfied criteria are ticked. Partial and unmet items carry an inlin
 - [x] Assigning to a non-existent user is rejected with helpful message
       <br>_`userExists()` → `InvalidUserException("User does not exist: " + assignedTo)`._
 
-## Error Handling — 2 met · 1 partial · 3 not met
+## Error Handling — 3 met · 1 partial · 2 not met
 
 - [x] Invalid state transition (e.g., Resolved directly to Cancelled) is rejected by backend
 - [x] Backend returns HTTP 400/409 with clear error message for invalid transitions
       <br>_`SC_CONFLICT` (409) at `TicketOperationServlet.java:382`, with the allowed-states list in `details.status`._
-- [ ] ❌ **NOT MET** — UI displays error message to user: "Invalid transition. Allowed next states: [list]"
-      <br>_The allowed-states list never reaches the user. The backend sends it in the `details.status` sub-object, but the frontend reads only the top-level `error` field (`_ticketdetail.js:319-326, 340`), so the user sees the bare string "Invalid status transition". No `409` check and no "Allowed next states" text exists anywhere in the frontend._
+- [x] UI displays error message to user: "Invalid transition. Allowed next states: [list]"
+      <br>_Frontend now reads `data.details.status` and formats the message as "Invalid transition. Allowed next states: [list]" (`_ticketdetail.js:313-350`)._
 - [ ] ⚠️ **PARTIAL** — Attempting to update a ticket that no longer exists shows "Ticket not found" error
       <br>_The detail view passes the server's "Ticket not found" through its generic handler. The **list view discards the response body** and shows `HTTP error! status: 404` instead (`_ticketlist.js:88-90`)._
 - [ ] ❌ **NOT MET** — Network errors during save show "Connection error, please try again"
@@ -59,7 +59,7 @@ Only fully-satisfied criteria are ticked. Partial and unmet items carry an inlin
 - [ ] ❌ **NOT MET** — JCR write conflicts are handled with retry or conflict resolution message
       <br>_Entirely absent. No retry, backoff, ETag/`If-Match`, or version token. Updates are last-write-wins (`_ticketdetail.js:264-270`)._
 
-## State Machine — 9 met · 1 partial · 1 not met
+## State Machine — 9 met · 2 partial
 
 - [x] Ticket starts in "Open" status
 - [x] Open → In Progress transition succeeds
@@ -72,8 +72,8 @@ Only fully-satisfied criteria are ticked. Partial and unmet items carry an inlin
 - [ ] ⚠️ **PARTIAL / CRITERION CONFLICTS WITH DESIGN** — Resolved → Open or In Progress transitions are rejected
       <br>_`Resolved → Open` **is** rejected, as required. But `Resolved → In Progress` is **deliberately allowed** as the reopen path (`StateTransitionValidatorImpl.java:31`), and is asserted as valid by 3 unit tests. This criterion contradicts the implemented and tested design — decide which is authoritative and amend one of them._
 - [x] Closed → any other status transition is rejected (terminal state)
-- [ ] ❌ **NOT MET** — Invalid transition shows error modal with allowed next states
-      <br>_Two shortfalls: it is inline text, not a modal, and it omits the allowed-states list (same root cause as the Error Handling item above). Mitigating factor: the dropdown is pre-filtered to valid next states (`_ticketdetail.js:173-183`), so invalid transitions are hard to trigger from the UI._
+- [ ] ⚠️ **PARTIAL** — Invalid transition shows error modal with allowed next states
+      <br>_The allowed-states list is now displayed, but as inline text rather than a modal. Mitigating factor: the dropdown is pre-filtered to valid next states (`_ticketdetail.js:173-183`), so invalid transitions are hard to trigger from the UI._
 
 ## Search & Filter — 5 met · 2 not met
 

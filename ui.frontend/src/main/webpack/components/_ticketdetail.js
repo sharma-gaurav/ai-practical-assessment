@@ -322,7 +322,9 @@
       .then(response => {
         if (!response.ok) {
           return response.json().then(data => {
-            throw new Error(data.error || 'Failed to change status');
+            const error = new Error(data.error || 'Failed to change status');
+            error.details = data.details;
+            throw error;
           });
         }
         return response.json();
@@ -340,7 +342,12 @@
       })
       .catch(error => {
         console.error('Error changing status:', error);
-        this.errorStatusEl.textContent = error.message || 'Failed to change status';
+        let message = error.message || 'Failed to change status';
+        // If this is an invalid transition, include the allowed next states
+        if (error.details && error.details.status) {
+          message = `Invalid transition. Allowed next states: ${error.details.status}`;
+        }
+        this.errorStatusEl.textContent = message;
         this.errorStatusEl.style.display = 'block';
       })
       .finally(() => {
